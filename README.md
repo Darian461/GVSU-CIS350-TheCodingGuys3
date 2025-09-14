@@ -1,7 +1,5 @@
 # The Coding Guys 3
 
-Project description (~1 Paragraph)
-
 An all-in-one fitness web application that includes calorie/macro tracking, as well as the ability to upload a PDF/Excel sheet regarding your workout routine. This will include a modern, sleek, and easy-to-use UI that allows the user to quickly navigate, manage, and interact with the application seamlessly. With the utilization of frameworks such as React, component libraries such as MUI and NextUI, an API to incorporate food nutrition data such as FoodData Central from USDA, as well as the countless resources online to help us convert PDF/Excel sheets into a generalized template, we hope to accomplish our goal of a fitness application that streamlines the process of tracking health/fitness without a multitude of apps and a monetary paywall.
 
 # Team Members and Roles
