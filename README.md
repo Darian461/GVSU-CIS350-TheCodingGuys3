@@ -5,7 +5,7 @@ An all-in-one fitness web application that includes calorie/macro tracking, as w
 # Team Members and Roles
 
 * [Nikolai Escondo](https://github.com/nescondo/CIS350-HW2-Escondo)
-* Member 2 (Role 3, Role 4)
+* [Darian Radakovic](https://github.com/Darian461/CIS350-HW2-Radakovic)
 * Member 3 (Role 5, Role 6)
 
 # Prerequisites
