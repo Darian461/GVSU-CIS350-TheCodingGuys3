@@ -1,6 +1,6 @@
 Team name: The Coding Guys 3
 
-Team members: Nikolai Escondo
+Team members: Nikolai Escondo, Todd Parcheta
 
 # Introduction
 
