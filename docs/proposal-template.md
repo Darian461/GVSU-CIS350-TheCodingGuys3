@@ -1,6 +1,6 @@
 Team name: The Coding Guys 3
 
-Team members: Nikolai Escondo, Todd Parcheta
+Team members: Nikolai Escondo, Todd Parcheta, Dakota Steele, Darian Radakovic
 
 # Introduction
 
@@ -13,6 +13,8 @@ This includes calorie/macro tracking and viewing/modifying a user's workout rout
 We emphasize the intuitiveness of the UI design - as this is a problem that is common across all fitness applications.
 This will allow us to encourage new users (and beginners to fitness) to utilize our application without unnecessary visual clutter that leads to confusion and ultimately, discouragement within their fitness journey.
 
+Landing page clean and simple with two different sections, one for fitness and one for nutrition. The fitness page will include things such as uploading documents such as pdfs or excel files of workout regimes. Also being able to create your own workout regimes. Then for the nutrition page we want to let people be able to make their own meal plans, but also allow them to choose branded foods that allows them to eat what they want rather then making the food.
+
 - Includes the ability to track calories and macros on a day-to-day basis. 
 - Data visualization plots will also be included to showcase changes on a day-to-day, weekly, or monthly basis. 
 - Utilization of an API to gather food nutrition data through a database will allow for user's to input daily consumption of food. 
@@ -24,6 +26,7 @@ This will allow us to encourage new users (and beginners to fitness) to utilize 
 (What technologies are needed to build this project)
 - React
 - Expo
+- Jira
 - Some sort of component library
 - Postman (for API calls when we don't have our UI ready yet)
 - Tableau? (Not sure, listed this as a potential data viz program to use since it's free to GVSU students)
