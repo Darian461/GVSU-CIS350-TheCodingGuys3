@@ -23,6 +23,7 @@ This will allow us to encourage new users (and beginners to fitness) to utilize 
 
 (What technologies are needed to build this project)
 - React
+- Expo
 - Some sort of component library
 - Postman (for API calls when we don't have our UI ready yet)
 - Tableau? (Not sure, listed this as a potential data viz program to use since it's free to GVSU students)
