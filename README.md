@@ -7,7 +7,7 @@ An all-in-one fitness web application that includes calorie/macro tracking, as w
 * [Nikolai Escondo](https://github.com/nescondo/CIS350-HW2-Escondo)
 * [Darian Radakovic](https://github.com/Darian461/CIS350-HW2-Radakovic)
 * [Todd Parcheta](https://github.com/ToddPar/CIS350-HW2-Parcheta.git)
-* Member 3 (Role 5, Role 6)
+* [Dakota Steele](https://github.com/Jus1Dak/CIS350-HW2-Steele)
 
 # Prerequisites
 
