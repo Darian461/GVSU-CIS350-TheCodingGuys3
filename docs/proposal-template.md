@@ -25,12 +25,14 @@ Landing page clean and simple with two different sections, one for fitness and o
 
 (What technologies are needed to build this project)
 - React
-- Expo
+- React Native
+- PrimeReact (component library)
 - Jira
-- Some sort of component library
 - Postman (for API calls when we don't have our UI ready yet)
-- Tableau? (Not sure, listed this as a potential data viz program to use since it's free to GVSU students)
+- Postgres (Database for user credentials)
 - Figma (UI/UX design for the project)
+- Potentially AWS?
+- Python (For backend)
 
 # Method/Approach
 
