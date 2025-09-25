@@ -32,6 +32,7 @@ Landing page clean and simple with two different sections, one for fitness and o
 - Postgres (Database for user credentials)
 - Figma (UI/UX design for the project)
 - Potentially AWS?
+- Python (For backend)
 
 # Method/Approach
 
