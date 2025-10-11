@@ -26,7 +26,7 @@ We plan to have processes that encompass the majority of what is used commonly i
 ## Non-Functional Requirements
 <b>R4</b>: All user login information shall be encrypted in the PostgreSQL database. <br>
 <b>R5</b>: Adding or removing food entries shall dynamically change the pie chart displaying the main calories or macronutrient selected on the "Macros" screen. <br>
-<b>R6</b> The header shall remain present on all pages of the application.
+<b>R6</b> The header shall remain present on all pages of the application. <br>
 <b>R7</b> Passwords shall not be viewable at any point.
 
 # Product Features
