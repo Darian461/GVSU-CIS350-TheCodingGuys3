@@ -12,7 +12,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 
 // FastAPI host IP 
-const API_BASE = "http://localhost:8000";
+const API_BASE = "http://172.18.231.219:8000";
 
 
 type AuthMode = "login" | "register";

@@ -3,12 +3,14 @@ from sqlalchemy.orm import Session
 from . import models, schemas, auth
 from .database import engine, SessionLocal
 from fastapi.middleware.cors import CORSMiddleware
-
-
+from . import food_api
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.include_router(food_api.router)
+
 
 app.add_middleware(
     CORSMiddleware,
