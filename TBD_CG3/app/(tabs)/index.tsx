@@ -6,8 +6,31 @@ import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
+import { VictoryLabel, VictoryPie, VictoryTheme } from 'victory';
+import React from 'react';
+
 
 export default function HomeScreen() {
+  const dailyGoal = 2000;
+  // Object data for Pie chart to be used within a state (so it can dynamically update values)
+  const [dailyTotalData, setDailyTotalData] = React.useState([
+    { x: "calories", y: 0},
+    { x: "remaining", y: dailyGoal, fill: "transparent"}
+  ]);
+
+  // Function to add calories and returns new state for dailyTotalData
+  function addToDaily(amount: number) {
+    setDailyTotalData(prevData => {
+      let calories = prevData[0].y + amount;
+      calories = Math.max(0, calories);
+      const remaining = dailyGoal - calories;
+      return [
+        { x: "calories", y: calories },
+        { x: "remaining", y: remaining, fill: "transparent"}
+      ]
+    })
+  }
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -17,62 +40,47 @@ export default function HomeScreen() {
           style={styles.reactLogo}
         />
       }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome to The-Coding-Guys-3 Project test!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
-
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
+      
+      {/*Portion for pie chart*/}
+      <ThemedView style={{ alignItems: 'center', marginVertical: 16 }}>
+        <svg viewBox="0 0 400 400" width={400} height={400}>
+          <VictoryPie
+            style={{
+              data: {
+                fill: ({ datum }) => 
+                  datum.x === "remaining" ? "transparent" : "#4f37d8b9",
+                  stroke: "none", 
+              },
+            }}
+            standalone={false}
+            width={400}
+            height={400}
+            animate={{duration: 300}}
+            theme={VictoryTheme.clean}
+            data={dailyTotalData}
+            labels={[]}
+            cornerRadius={10}
+            startAngle={0}
+            innerRadius={125}
+          />
+          <VictoryLabel
+            textAnchor="middle"
+            style={{ fontSize: 25, fill: '#ffffffff' }}
+            x={200}
+            y={175}
+            text={`${dailyTotalData[0].y} \nconsumed`}
+          />
+          <VictoryLabel
+            textAnchor="middle"
+            style={{ fontSize: 20, fill: '#ffffffff' }}
+            x={200}
+            y={230}
+            text={`${dailyGoal - dailyTotalData[0].y} \nremaining`}
+          />
+        </svg>
+        {/*for testing dynamic updates to pie chart*/}
+        <button onClick={() => addToDaily(250)}>Add 250 Calories</button>
+        <button onClick={() => addToDaily(-250)}>Remove 250 Calories</button>
       </ThemedView>
     </ParallaxScrollView>
   );

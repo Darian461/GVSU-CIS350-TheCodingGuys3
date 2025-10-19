@@ -1,56 +1,83 @@
-Team name: The Coding Guys 3
+<b>Team name:</b> The Coding Guys 3
 
-Team members: Nikolai Escondo, Todd Parcheta, Dakota Steele, Darian Radakovic
+<b>Team members:</b> Nikolai Escondo, Todd Parcheta, Dakota Steele, Darian Radakovic
+
+# Abstract
+
+Health and fitness is a critical aspect in everyone's life. In today's technology driven era, a plethora of knowledge and accessibility to tools regarding our diet and exercise
+are available to us through the internet. However, starting your health and fitness journey is a cumbersome task - especially when stonewalled by an overwhelming number
+of applications and resources. On top of that, fitness applications meant for accessibility and ease-of-use are often bulky and filled with jargon and visual clutter that scare
+away new users and beginners. Our goal is to create an application that remedies this issue - offering a fluid, easy-to-use, and accessible UI that is complete with the essential
+functionalities of health and fitness applications such as food logging, exercise programming, and data visualizations of our journey.
 
 # Introduction
 
-(In 2-4 paragraphs, describe your project concept)
-(Also define some loosely defined features of your project using bullet points)
+An intuitive, modern, easy-to-use all-in-one fitness web application that includes the ability to track calories, upload or create exercise programs, and data visualizations of the
+user's progress. We emphasize the intuitiveness and cleanliness of the UI - where we plan to design an interface that is clear of visual clutter and navigation is quick and easy
+to use. Accessibility for all users is also a goal, where exercise examples and jargon is explained in a simple, easy-to-follow manner.
+We plan to have processes that encompass the majority of what is used commonly in all fitness applications.
 
-An intuitive, modern, easy-to-use all-in-one fitness web application. 
-We plan to have processes that encompass the majority of what is used commonly in all fitness applications. 
-This includes calorie/macro tracking and viewing/modifying a user's workout routine.
-We emphasize the intuitiveness of the UI design - as this is a problem that is common across all fitness applications.
-This will allow us to encourage new users (and beginners to fitness) to utilize our application without unnecessary visual clutter that leads to confusion and ultimately, discouragement within their fitness journey.
+# Requirements
+## Functional Requirements
+<b>R1</b>: The user shall be presented with a landing page upon launching the application. <br>
+<b>R2</b>: When the user clicks on the "Register" button, the user shall be routed to a registration page. <br>
+<b>R3</b>: The user shall be able to log food entries within the "Macros" page by clicking the "+" button in the bottom navigation bar.
 
-Landing page clean and simple with two different sections, one for fitness and one for nutrition. The fitness page will include things such as uploading documents such as pdfs or excel files of workout regimes. Also being able to create your own workout regimes. Then for the nutrition page we want to let people be able to make their own meal plans, but also allow them to choose branded foods that allows them to eat what they want rather then making the food.
+## Non-Functional Requirements
+<b>R4</b>: All user login information shall be encrypted in the PostgreSQL database. <br>
+<b>R5</b>: Adding or removing food entries shall dynamically change the pie chart displaying the main calories or macronutrient selected on the "Macros" screen. <br>
+<b>R6</b>: The header shall remain present on all pages of the application. <br>
+<b>R7</b>: Passwords shall not be viewable at any point.
 
-- Includes the ability to track calories and macros on a day-to-day basis. 
-- Data visualization plots will also be included to showcase changes on a day-to-day, weekly, or monthly basis. 
-- Utilization of an API to gather food nutrition data through a database will allow for user's to input daily consumption of food. 
-- Storing user data will allow us to create graphical plots to showcase these changes in a clean, easy to interpret manner. 
-- Additionally, the conversion of an uploaded PDF/Excel file allows the user to view and modify their workout routine in a generalized template.
+# Product Features
+<ol>
+    <li>The ability to track calories, macronutrients, and micronutrients on a day-to-day basis.</li>
+    <li>Data visualization plots will be included to showcase progress in nutrition and exercise statistics on a daily, weekly, or monthly basis.</li>
+    <li>Utilization of USDA FoodData Central database will be used to gather food nutrition data.</li>
+    <li>Conversion of an uploaded PDF/Excel file to a generalized workout template.</li>
+    <li>The ability to create your own workout through a generalized template.</li>
+</ol>
 
 # Anticipated Technologies
-
-(What technologies are needed to build this project)
-- React
-- React Native
-- PrimeReact (component library)
-- Jira
-- Postman (for API calls when we don't have our UI ready yet)
-- Postgres (Database for user credentials)
-- Figma (UI/UX design for the project)
-- Potentially AWS?
-- Python (For backend)
-
-# Method/Approach
-
-(What is your estimated "plan of attack" for developing this project)
-- Get familiar with necessary technologies
-- Plan out UI/UX design and ensure we have a template to refer to when developing/writing code
-- We should assign cards/tickets that aren't too big, with detailed instructions on what we want exactly to ensure we are moving at a manageable, yet incrementing state
-
-# Estimated Timeline
-
-(Figure out what your major milestones for this project will be, including how long you anticipate it *may* take to reach that point)
-- I anticipate that the UI design shouldnt take too long - around possibly 2-3 weeks
-- The majority of our time will most likely be focused on interaction/integration of APIs and conversion of PDF/Excel sheets - could take upwards to 4-6 weeks
-
-# Anticipated Problems
-
-(Describe any problems you foresee that you will need to overcome)
-- Getting used to organizing each other's code and building off their work
-- Integration of various technologies and languages we will be using
-
-Remember this is a living document is expected to be changed as you make progress on your project.
+<ol>
+    <li>TypeScript</li>
+        <ol>
+            <li>Primary front-end development programming language.</li>
+        </ol>
+    <li>Python</li>
+        <ol>
+            <li>Primary back-end development programming language.</li>
+        </ol>
+    <li>Node.js</li>
+        <ol>
+            <li>Run-time environment to enable usage of JavaScript outside of web browsers.</li>
+        </ol>
+    <li>React Native</li>
+        <ol>
+            <li>Primary front-end development framework.</li>
+        </ol>
+    <li>Victory/Victory Native</li>
+        <ol>
+            <li>Component libraries for data visualization.</li>
+        </ol>
+    <li>gluestack-ui</li>
+        <ol>
+            <li>Component library for UI design.</li>
+        </ol>
+    <li>PostgreSQL</li>
+        <ol>
+            <li>Database management system.</li>
+        </ol>
+    <li>Postman</li>
+        <ol>
+            <li>API platform used for developing, testing, and managing APIs.</li>
+        </ol>
+    <li>Figma</li>
+        <ol>
+            <li>Design tool for prototyping and UI/UX design.</li>
+        </ol>
+    <li>Jira</li>
+        <ol>
+            <li>Project management tool.</li>
+        </ol>
+</ol>
