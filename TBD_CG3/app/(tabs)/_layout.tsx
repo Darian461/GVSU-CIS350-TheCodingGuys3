@@ -38,6 +38,12 @@ export default function Layout() {
             ),
           }}
         />
+        <Tabs.Screen
+          name="Login"
+          options={{
+            title:'Login'
+       }}
+       />
       </Tabs>
     </View>
   );
