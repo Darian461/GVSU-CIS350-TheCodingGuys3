@@ -1,11 +1,8 @@
 {
   "dependencies": {
-<<<<<<< HEAD
     "@gluestack-ui/config": "^1.1.20",
-    "@gluestack-ui/themed": "^1.1.73"
-=======
+    "@gluestack-ui/themed": "^1.1.73",
     "@supabase/supabase-js": "^2.75.0",
     "react-native-svg": "^15.14.0"
->>>>>>> origin/main
   }
 }
