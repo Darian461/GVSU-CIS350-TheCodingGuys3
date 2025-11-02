@@ -1,6 +1,7 @@
 import { ThemedView } from "@/components/themed-view";
 import { Table, TableBody, TableData, TableRow } from "@/components/ui/table";
 import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Pressable, SearchIcon, Text } from "@gluestack-ui/themed";
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { BadgePlus, Barcode } from 'lucide-react-native';
 import React from 'react';
 import { ScrollView } from 'react-native';
@@ -10,6 +11,7 @@ import CreateFoodScreen from './createFood';
 
 
 const Header = () => {
+  const navigation = useNavigation<NavigationProp<any>>();
   return (
     <Box
       bg="$backgroundLight0"
@@ -29,7 +31,11 @@ const Header = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <Icon as={CloseIcon} color="$textLight500"/>
+            <Pressable onPress={() => navigation.navigate('(tabs)', { screen: 'index'})}>
+              <Icon 
+                as={CloseIcon} 
+                color="$textLight500"/>
+            </Pressable>
           </Box>
           <Text fontSize="$lg" fontWeight="$bold" color="$textLight800">
             Search
