@@ -1,4 +1,6 @@
-import { Box, CloseIcon, HStack, Icon, Pressable, SearchIcon, Text, View } from "@gluestack-ui/themed";
+import { ThemedView } from "@/components/themed-view";
+import { Table, TableBody, TableData, TableRow } from "@/components/ui/table";
+import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Pressable, SearchIcon, Text } from "@gluestack-ui/themed";
 import { BadgePlus, Barcode } from 'lucide-react-native';
 import React from 'react';
 import { ScrollView } from 'react-native';
@@ -151,17 +153,10 @@ const TopNavBar = ({ activeButton, setActiveButton }: {
 };
 
 export default function FoodSearch() {
-  const dailyGoal = 3500;
-  const consumed = 1500;
-  const remaining = dailyGoal - consumed;
-
-  const data = [
-    { x: "consumed", y: consumed },
-    { x: "remaining", y: remaining },
-  ];
 
   // Track active button for TopNavBar
   const [activeButton, setActiveButton] = React.useState('search');
+  const [searchText, setSearchText] = React.useState('');
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -170,9 +165,43 @@ export default function FoodSearch() {
       <TopNavBar activeButton={activeButton} setActiveButton={setActiveButton} />
 
       {activeButton === 'search' && (
-        <View>
-          
-        </View>
+        
+        <ThemedView>
+          <Input
+            variant="rounded"
+            size="lg"
+            mx="$2"
+            my="$2">
+
+            <InputSlot px="$2">
+              <InputIcon as={SearchIcon} color="$textLight500" />
+            </InputSlot>
+            
+            <InputField 
+              placeholder="Enter food name here..."
+              value={searchText}
+              onChangeText={setSearchText}
+            />
+            
+            {searchText.length > 0 && (
+              <InputSlot px="$2">
+                <Pressable onPress={() => setSearchText('')}>
+                  <InputIcon as={CloseIcon} color="$textLight500" />
+                </Pressable>
+              </InputSlot>
+            )}
+          </Input>
+
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableData/>
+              </TableRow>
+            </TableBody>
+          </Table>
+
+
+        </ThemedView>
       )}
 
       {activeButton === 'barcode' && <BarcodeScreen />}
