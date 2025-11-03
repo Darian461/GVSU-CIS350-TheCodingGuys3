@@ -1,12 +1,11 @@
-import React from "react";
-import { View, Platform, TouchableOpacity } from "react-native";
-import { Tabs, useRouter } from "expo-router";
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { Box, HStack, Pressable, Icon, Text } from "@gluestack-ui/themed";
-import { AddIcon, CircleIcon, SettingsIcon, ThreeDotsIcon } from "@gluestack-ui/themed";
+import { AddIcon, Box, CircleIcon, HStack, Icon, Pressable, SettingsIcon, Text } from "@gluestack-ui/themed";
+import { Tabs, useRouter } from "expo-router";
+import React from "react";
+import { Platform, TouchableOpacity, View } from "react-native";
 
 const Header = () => (
   <Box
@@ -62,7 +61,7 @@ export default function Layout() {
           tabBarButton: HapticTab,
           tabBarStyle: {
             height: 70,
-            position: "relative", // ✅ allows absolute child positioning
+            position: "relative",
             paddingBottom: 10,
             paddingTop: 10,
           },
@@ -90,14 +89,14 @@ export default function Layout() {
           }}
         />
 
-        {/* Add  */}
+        {/* Food Search Home Page  */}
         <Tabs.Screen
-          name="add"
+          name="foodSearchHomePage"
           options={{
             title: "",
             tabBarButton: () => (
               <TouchableOpacity
-                onPress={() => router.push("/add")}
+                onPress={() => router.push("/foodSearchHomePage")}
                 style={{
                   position: "absolute",
                   bottom: 20, // centers vertically relative to tab bar
@@ -144,6 +143,15 @@ export default function Layout() {
         />
 
         {/* Login
+        <Tabs.Screen
+          name="foodSearch"
+          options={{
+            title: 'Food Search',
+            tabBarIcon: ({ color }) => (
+              <IconSymbol size={28} name="fork.knife" color={color} />
+            ),
+          }}
+        />
         <Tabs.Screen
           name="Login"
           options={{

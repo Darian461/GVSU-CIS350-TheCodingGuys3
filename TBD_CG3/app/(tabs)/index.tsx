@@ -1,16 +1,9 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet, View, Text } from 'react-native';
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
-import { VictoryLabel, VictoryPie } from 'victory-native';
-import Svg from "react-native-svg";
+import { AddIcon, Box, HStack, Icon, Pressable, Text, VStack } from "@gluestack-ui/themed";
 import React from 'react';
-import { ScrollView } from 'react-native';
-import { HStack, VStack, Box, Pressable, Divider, Icon, Button } from "@gluestack-ui/themed";
-import { AddIcon } from "@gluestack-ui/themed";
+import { ScrollView, StyleSheet } from 'react-native';
+import Svg from "react-native-svg";
+import { VictoryLabel, VictoryPie } from 'victory-native';
 
 const today = new Date().toLocaleDateString(undefined, {
   weekday: 'long', // e.g., "Monday"
