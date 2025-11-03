@@ -5,45 +5,11 @@ import { ScrollView, StyleSheet } from 'react-native';
 import Svg from "react-native-svg";
 import { VictoryLabel, VictoryPie } from 'victory-native';
 
-
-const Header = () => {
-  return (
-    <Box
-      bg="$backgroundLight0"
-      width="100%"
-      px="$4"
-      py="$3"
-      borderBottomWidth={1}
-      borderColor="$borderLight200"
-    >
-      <HStack justifyContent="space-between" alignItems="center">
-        {/* Left side: Logo + Title */}
-        <HStack alignItems="center" space="md">
-          <Box
-            bg="$backgroundLight200"
-            width={40}
-            height={40}
-            rounded="$full"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Icon as={AddIcon} color="$textLight500" />
-          </Box>
-          <Text fontSize="$lg" fontWeight="$bold" color="$textLight800">
-            macal
-          </Text>
-        </HStack>
-
-        {/* Right side: Nav Button */}
-        <Pressable>
-          <Text fontSize="$md" color="$textLight700">
-            macro
-          </Text>
-        </Pressable>
-      </HStack>
-    </Box>
-  );
-};
+const today = new Date().toLocaleDateString(undefined, {
+  weekday: 'long', // e.g., "Monday"
+  month: 'long',   // e.g., "October"
+  day: 'numeric',  // e.g., "27"
+});
 
 
 export default function HomeScreen() {
@@ -57,17 +23,18 @@ export default function HomeScreen() {
   ];
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <Header />
+    <ScrollView style={{backgroundColor: '#ffffffff' }}>
 
       {/* Outer container for chart and boxes */}
       <ThemedView style={styles.container}>
         <VStack alignItems="center" space="lg">
+          {/* Date in middle */}
+          <Text style={styles.dateText}>{today}</Text>
 
           {/* Row above the chart */}
           <HStack space="lg">
-            <StatBox title="Protein" value="120g" color="#f87171" />
-            <StatBox title="Carbs" value="200g" color="#3fe51eff" />
+            <StatBox title="Protein" value="120g" color="#ef4444" />
+            <StatBox title="Carbs" value="200g" color="#22c55e" />
           </HStack>
 
           {/* Center pie chart */}
@@ -84,7 +51,7 @@ export default function HomeScreen() {
                 style={{
                   data: {
                     fill: ({ datum }) =>
-                      datum.x === "remaining" ? "transparent" : "#d83737b9",
+                      datum.x === "remaining" ? "transparent" : "#4f46e5",
                   },
                 }}
               />
@@ -115,7 +82,7 @@ export default function HomeScreen() {
           {/* Row below the chart */}
           <HStack space="lg">
             <StatBox title="Fats" value="60g" color="#facc15" />
-            <StatBox title="Water" value="100ml" color="#3517c9ff" />
+            <StatBox title="Water" value="100ml" color="#2d05f6ff" />
           </HStack>
 
         </VStack>
@@ -139,8 +106,12 @@ const StatBox = ({ title, value, color }: { title: string; value: string; color:
     borderWidth={1}
     borderColor="$borderLight200"
   >
-    <Text style={{ fontSize: 18, fontWeight: 'bold', color }}>{value}</Text>
-    <Text style={{ fontSize: 14, color: '#555' }}>{title}</Text>
+    <Text style={{ fontSize: 14, fontWeight: '600', color, marginBottom: 4 }}>
+      {title}
+    </Text>
+    <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#000' }}>
+      {value}
+    </Text>
   </Box>
 );
 
@@ -151,6 +122,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flex: 1,
     backgroundColor: "#ffffffff",
-    paddingVertical: 40,
+    paddingTop: 40,
+    paddingBottom: 0,
+  },
+  dateText: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 10,
   },
 });

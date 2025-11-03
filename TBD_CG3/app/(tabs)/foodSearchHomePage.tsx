@@ -1,56 +1,48 @@
 import { ThemedView } from "@/components/themed-view";
 import { Table, TableBody, TableData, TableRow } from "@/components/ui/table";
-import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Pressable, SearchIcon, Text } from "@gluestack-ui/themed";
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Pressable, SearchIcon } from "@gluestack-ui/themed";
 import { BadgePlus, Barcode } from 'lucide-react-native';
 import React from 'react';
 import { ScrollView } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import BarcodeScreen from './barcode';
-import CreateFoodScreen from './createFood';
+import BarcodeScreen from '../foodSearch/barcode';
+import CreateFoodScreen from '../foodSearch/createFood';
 
-
-const Header = () => {
-  const navigation = useNavigation<NavigationProp<any>>();
-  return (
-    <Box
-      bg="$backgroundLight0"
-      width="100%"
-      px="$4"
-      py="$3"
-      borderBottomWidth={1}
-      borderColor="$backgroundLight0" // to blend with TopNavBar
-    >
-      <HStack justifyContent="space-between" alignItems="center">
-        <HStack alignItems="center" space="md">
-          <Box
-            bg="$backgroundLight200"
-            width={40}
-            height={40}
-            rounded="$full"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Pressable onPress={() => navigation.navigate('(tabs)', { screen: 'index'})}>
-              <Icon 
-                as={CloseIcon} 
-                color="$textLight500"/>
-            </Pressable>
-          </Box>
-          <Text fontSize="$lg" fontWeight="$bold" color="$textLight800">
-            Search
-          </Text>
-        </HStack>
-
-        <Pressable>
-          <Text fontSize="$md" color="$textLight700">
-            macro
-          </Text>
-        </Pressable>
-      </HStack>
-    </Box>
-  );
-};
+// const Header = () => {
+//   const navigation = useNavigation<NavigationProp<any>>();
+//   return (
+//     <Box
+//       bg="$backgroundLight0"
+//       width="100%"
+//       px="$4"
+//       py="$3"
+//       borderBottomWidth={1}
+//       borderColor="$backgroundLight0" // to blend with TopNavBar
+//     >
+//       <HStack justifyContent="space-between" alignItems="center">
+//         <HStack alignItems="center" space="md">
+//           <Box
+//             bg="$backgroundLight200"
+//             width={40}
+//             height={40}
+//             rounded="$full"
+//             justifyContent="center"
+//             alignItems="center"
+//           >
+//             <Pressable onPress={() => navigation.navigate('(tabs)', { screen: 'index'})}>
+//               <Icon 
+//                 as={CloseIcon} 
+//                 color="$textLight500"/>
+//             </Pressable>
+//           </Box>
+//           <Text fontSize="$lg" fontWeight="$bold" color="$textLight800">
+//             Search
+//           </Text>
+//         </HStack>
+//       </HStack>
+//     </Box>
+//   );
+// };
 
 const BUTTONS = [
   { key: 'search', icon: SearchIcon },
@@ -167,7 +159,7 @@ export default function FoodSearch() {
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
 
-      <Header />
+      {/* <Header /> -> commented out "Search" header to keep original header*/}
       <TopNavBar activeButton={activeButton} setActiveButton={setActiveButton} />
 
       {activeButton === 'search' && (
