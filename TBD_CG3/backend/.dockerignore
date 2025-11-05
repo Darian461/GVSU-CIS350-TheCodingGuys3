@@ -1,0 +1,17 @@
+# Python environment
+venv
+.env
+__pycache__
+
+# Git repo
+.git
+.gitignore
+
+# Logs
+*.log
+
+# OS stuff
+.DS_Store
+
+# Tests (optional)
+tests

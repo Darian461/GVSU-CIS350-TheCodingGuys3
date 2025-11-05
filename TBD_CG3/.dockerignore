@@ -1,0 +1,23 @@
+# Node dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build output
+dist
+build
+.expo
+.expo-shared
+
+# Git repo
+.git
+.gitignore
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+
+# OS stuff
+.DS_Store

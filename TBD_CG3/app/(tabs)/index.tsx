@@ -1,10 +1,17 @@
-import { StyleSheet, Text } from "react-native";
 import { ThemedView } from "@/components/themed-view";
-import { VictoryLabel, VictoryPie } from "victory-native";
-import Svg from "react-native-svg";
+import {
+  AddIcon,
+  Box,
+  HStack,
+  Icon,
+  Pressable,
+  Text,
+  VStack,
+} from "@gluestack-ui/themed";
 import React from "react";
-import { ScrollView } from "react-native";
-import { HStack, VStack, Box } from "@gluestack-ui/themed";
+import { ScrollView, StyleSheet } from "react-native";
+import Svg from "react-native-svg";
+import { VictoryLabel, VictoryPie } from "victory-native";
 
 const today = new Date().toLocaleDateString(undefined, {
   weekday: "long", // e.g., "Monday"
