@@ -1,23 +1,16 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet, View, Text } from 'react-native';
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
-import { VictoryLabel, VictoryPie } from 'victory-native';
+import { StyleSheet, Text } from "react-native";
+import { ThemedView } from "@/components/themed-view";
+import { VictoryLabel, VictoryPie } from "victory-native";
 import Svg from "react-native-svg";
-import React from 'react';
-import { ScrollView } from 'react-native';
-import { HStack, VStack, Box, Pressable, Divider, Icon, Button } from "@gluestack-ui/themed";
-import { AddIcon } from "@gluestack-ui/themed";
+import React from "react";
+import { ScrollView } from "react-native";
+import { HStack, VStack, Box } from "@gluestack-ui/themed";
 
 const today = new Date().toLocaleDateString(undefined, {
-  weekday: 'long', // e.g., "Monday"
-  month: 'long',   // e.g., "October"
-  day: 'numeric',  // e.g., "27"
+  weekday: "long", // e.g., "Monday"
+  month: "long", // e.g., "October"
+  day: "numeric", // e.g., "27"
 });
-
 
 export default function HomeScreen() {
   const dailyGoal = 3500;
@@ -30,8 +23,7 @@ export default function HomeScreen() {
   ];
 
   return (
-    <ScrollView style={{backgroundColor: '#ffffffff' }}>
-
+    <ScrollView style={{ backgroundColor: "#ffffffff" }}>
       {/* Outer container for chart and boxes */}
       <ThemedView style={styles.container}>
         <VStack alignItems="center" space="lg">
@@ -91,16 +83,22 @@ export default function HomeScreen() {
             <StatBox title="Fats" value="60g" color="#facc15" />
             <StatBox title="Water" value="100ml" color="#2d05f6ff" />
           </HStack>
-
         </VStack>
       </ThemedView>
     </ScrollView>
   );
 }
 
-
 /* A reusable stat box */
-const StatBox = ({ title, value, color }: { title: string; value: string; color: string }) => (
+const StatBox = ({
+  title,
+  value,
+  color,
+}: {
+  title: string;
+  value: string;
+  color: string;
+}) => (
   <Box
     w={140}
     h={80}
@@ -113,15 +111,14 @@ const StatBox = ({ title, value, color }: { title: string; value: string; color:
     borderWidth={1}
     borderColor="$borderLight200"
   >
-    <Text style={{ fontSize: 14, fontWeight: '600', color, marginBottom: 4 }}>
+    <Text style={{ fontSize: 14, fontWeight: "600", color, marginBottom: 4 }}>
       {title}
     </Text>
-    <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#000' }}>
+    <Text style={{ fontSize: 18, fontWeight: "bold", color: "#000" }}>
       {value}
     </Text>
   </Box>
 );
-
 
 const styles = StyleSheet.create({
   container: {

@@ -6,7 +6,12 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { Box, HStack, Pressable, Icon, Text } from "@gluestack-ui/themed";
-import { AddIcon, CircleIcon, SettingsIcon, ThreeDotsIcon } from "@gluestack-ui/themed";
+import {
+  AddIcon,
+  CircleIcon,
+  SettingsIcon,
+  ThreeDotsIcon,
+} from "@gluestack-ui/themed";
 
 const Header = () => (
   <Box
@@ -62,7 +67,7 @@ export default function Layout() {
           tabBarButton: HapticTab,
           tabBarStyle: {
             height: 70,
-            position: "relative", // ✅ allows absolute child positioning
+            position: "relative",
             paddingBottom: 10,
             paddingTop: 10,
           },
@@ -115,7 +120,7 @@ export default function Layout() {
                   zIndex: 10,
                 }}
               >
-                <Icon as={AddIcon} size="xl" color="color" />              
+                <Icon as={AddIcon} size="xl" color="color" />
               </TouchableOpacity>
             ),
           }}
