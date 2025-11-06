@@ -11,9 +11,8 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-// FastAPI host IP 
+// FastAPI host IP
 const API_BASE = "http://172.18.231.219:8000";
-
 
 type AuthMode = "login" | "register";
 
@@ -25,43 +24,66 @@ const AuthScreen: React.FC = () => {
   const navigation = useNavigation<any>();
 
   const handleAuth = async () => {
-    try {
-      const endpoint =
-        mode === "login"
-          ? `${API_BASE}/login`
-          : `${API_BASE}/register`;
+  // Text validation
+  if (mode === "register" && !username.trim()) {
+    alert("Please enter a username.");
+    return;
+  }
 
-      // match FastAPI’s expected request body
-      const payload =
-        mode === "login"
-          ? { identifier: email, password }
-          : { username, email, password };
+  if (!email.trim()) {
+    alert("Please enter your email or username.");
+    return;
+  }
 
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+  if (!password.trim()) {
+    alert("Please enter your password.");
+    return;
+  }
 
-      const data = await response.json();
-      console.log("Response:", data);
+  // Password validation
+  const passwordRegex = /^(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,20}$/;
+  if (!passwordRegex.test(password)) {
+    alert("Password must be 8–20 characters and include at least one special character.");
+    return;
+  }
 
-      if (!response.ok) {
-        alert(`❌ ${data.detail || "Something went wrong"}`);
-        return;
-      }
+  try {
+    const endpoint =
+      mode === "login"
+        ? `${API_BASE}/login`
+        : `${API_BASE}/register`;
 
-      if (mode === "register") {
-        alert("✅ Account created successfully!");
-      } else {
-        alert("✅ Logged in successfully!");
-        navigation.replace("Home");
-      }
-    } catch (err) {
-      console.error("Auth error:", err);
-      alert("⚠️ Network or server error");
+    const payload =
+      mode === "login"
+        ? { identifier: email, password }
+        : { username, email, password };
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+    console.log("Response:", data);
+
+    if (!response.ok) {
+      alert(`${data.detail || "Something went wrong"}`);
+      return;
     }
-  };
+
+    if (mode === "register") {
+      alert("Account created successfully!");
+    } else {
+      alert("Logged in successfully!");
+      navigation.replace("Home");
+    }
+  } catch (err) {
+    console.error("Auth error:", err);
+    alert("Network or server error");
+  }
+};
+
 
   return (
     <KeyboardAvoidingView
@@ -69,14 +91,14 @@ const AuthScreen: React.FC = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.card}>
-        <Text style={styles.title}>
-          {mode === "login" ? "Welcome Back" : "Create Your Account"}
-        </Text>
+        <Text style={styles.appTitle}>macal</Text>
+        <Text style={styles.dateText}>Welcome {mode === "login" ? "Back" : "Aboard"} 👋</Text>
 
         {mode === "register" && (
           <TextInput
             style={styles.input}
             placeholder="Username"
+            placeholderTextColor="#999"
             value={username}
             onChangeText={setUsername}
             autoCapitalize="none"
@@ -86,6 +108,7 @@ const AuthScreen: React.FC = () => {
         <TextInput
           style={styles.input}
           placeholder={mode === "login" ? "Email or Username" : "Email"}
+          placeholderTextColor="#999"
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -94,6 +117,7 @@ const AuthScreen: React.FC = () => {
         <TextInput
           style={styles.input}
           placeholder="Password"
+          placeholderTextColor="#999"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -122,11 +146,66 @@ const AuthScreen: React.FC = () => {
 export default AuthScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: "center", justifyContent: "center", padding: 20 },
-  card: { width: "100%", maxWidth: 400, backgroundColor: "#FFF", padding: 24, borderRadius: 20 },
-  title: { fontSize: 24, fontWeight: "700", marginBottom: 16, textAlign: "center" },
-  input: { borderWidth: 1, borderColor: "#E0E0E0", borderRadius: 12, padding: 12, marginBottom: 16 },
-  button: { backgroundColor: "#6366F1", borderRadius: 12, paddingVertical: 14 },
-  buttonText: { color: "#FFF", fontWeight: "600", textAlign: "center" },
-  toggleText: { textAlign: "center", color: "#666", marginTop: 16 },
+  container: {
+    flex: 1,
+    backgroundColor: "#F9FAFB",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  card: {
+    width: "100%",
+    maxWidth: 380,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
+    paddingVertical: 40,
+    paddingHorizontal: 28,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  appTitle: {
+    fontSize: 26,
+    fontWeight: "700",
+    color: "#111827",
+    marginBottom: 4,
+  },
+  dateText: {
+    fontSize: 15,
+    color: "#6B7280",
+    marginBottom: 28,
+  },
+  input: {
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    backgroundColor: "#F9FAFB",
+    marginBottom: 16,
+    color: "#111827",
+  },
+  button: {
+    backgroundColor: "#6366F1",
+    borderRadius: 14,
+    width: "100%",
+    paddingVertical: 16,
+    marginTop: 4,
+  },
+  buttonText: {
+    color: "#FFF",
+    fontWeight: "600",
+    textAlign: "center",
+    fontSize: 16,
+  },
+  toggleText: {
+    marginTop: 20,
+    color: "#6B7280",
+    textAlign: "center",
+    fontSize: 14,
+  },
 });
