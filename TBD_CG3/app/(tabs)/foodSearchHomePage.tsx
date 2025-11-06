@@ -1,12 +1,12 @@
 import { ThemedView } from "@/components/themed-view";
 import { Table, TableBody, TableData, TableRow } from "@/components/ui/table";
-import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Pressable, SearchIcon } from "@gluestack-ui/themed";
+import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Pressable, SearchIcon, Text } from "@gluestack-ui/themed";
 import { BadgePlus, Barcode } from 'lucide-react-native';
 import React from 'react';
 import { ScrollView } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import BarcodeScreen from '../foodSearch/barcode';
-import CreateFoodScreen from '../foodSearch/createFood';
+  import CreateFoodScreen from '../foodSearch/createFood';
 
 // const Header = () => {
 //   const navigation = useNavigation<NavigationProp<any>>();
@@ -152,35 +152,68 @@ const TopNavBar = ({ activeButton, setActiveButton }: {
 
 export default function FoodSearch() {
 
-  // Track active button for TopNavBar
   const [activeButton, setActiveButton] = React.useState('search');
   const [searchText, setSearchText] = React.useState('');
 
+  // backend interaction states + base URL
+  const API_BASE = "http://172.18.231.219:8000"; 
+  const [results, setResults] = React.useState<any[]>([]);
+  const [selectedFood, setSelectedFood] = React.useState<any | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
+  // searchFoods + getFoodDetails functions
+  const searchFoods = async () => {
+    if (!searchText.trim()) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/search-food/?query=${encodeURIComponent(searchText)}`);
+      const data = await res.json();
+      setResults(data);
+      setSelectedFood(null);
+    } catch (error) {
+      console.error("Error searching foods:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getFoodDetails = async (fdcId: number) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/food-details/${fdcId}`);
+      const data = await res.json();
+      setSelectedFood(data);
+      setResults([]);
+    } catch (error) {
+      console.error("Error getting food details:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
-
-      {/* <Header /> -> commented out "Search" header to keep original header*/}
       <TopNavBar activeButton={activeButton} setActiveButton={setActiveButton} />
 
       {activeButton === 'search' && (
-        
         <ThemedView>
           <Input
             variant="rounded"
             size="lg"
             mx="$2"
             my="$2">
-
             <InputSlot px="$2">
               <InputIcon as={SearchIcon} color="$textLight500" />
             </InputSlot>
-            
+
+            {/* added onSubmitEditing to trigger search */}
             <InputField 
               placeholder="Enter food name here..."
               value={searchText}
               onChangeText={setSearchText}
+              onSubmitEditing={searchFoods} 
             />
-            
+
             {searchText.length > 0 && (
               <InputSlot px="$2">
                 <Pressable onPress={() => setSearchText('')}>
@@ -190,6 +223,64 @@ export default function FoodSearch() {
             )}
           </Input>
 
+
+          {/* show search results list */}
+          {!selectedFood && !loading && results.length > 0 && (
+            <Box mx="$2" my="$2">
+              {results.map((item) => (
+                <Pressable
+                  key={item.fdcId}
+                  onPress={() => getFoodDetails(item.fdcId)}
+                  style={{
+                    paddingVertical: 10,
+                    borderBottomWidth: 1,
+                    borderColor: '#eee'
+                  }}
+                >
+                  <Box>
+                    <HStack justifyContent="space-between" alignItems="center">
+                      <Box>
+                        <Text>{item.description}</Text>
+                        {item.brandName && (
+                          <Text style={{ color: '#ffffffff', fontSize: 12 }}>{item.brandName}</Text>
+                        )}
+                      </Box>
+                    </HStack>
+                  </Box>
+                </Pressable>
+              ))}
+            </Box>
+          )}
+
+          {/* show selected food nutrients */}
+          {selectedFood && !loading && (
+            <Box mx="$2" my="$2">
+              <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 8 }}>
+                {selectedFood.description}
+              </Text>
+
+              {selectedFood.nutrients?.map((nutrient: any, index: number) => (
+                <HStack key={index} justifyContent="space-between" mb="$2">
+                  <Text>{nutrient.label}</Text>
+                  <Text>{nutrient.amount} {nutrient.unit}</Text>
+                </HStack>
+              ))}
+
+              <Pressable
+                onPress={() => setSelectedFood(null)}
+                style={{
+                  marginTop: 10,
+                  backgroundColor: '#e5e7eb',
+                  padding: 10,
+                  borderRadius: 8,
+                }}
+              >
+                <Text>Back to Search</Text>
+              </Pressable>
+            </Box>
+          )}
+
+          {/* keep table placeholder for structure */}
           <Table>
             <TableBody>
               <TableRow>
@@ -197,14 +288,11 @@ export default function FoodSearch() {
               </TableRow>
             </TableBody>
           </Table>
-
-
         </ThemedView>
       )}
 
       {activeButton === 'barcode' && <BarcodeScreen />}
       {activeButton === 'create' && <CreateFoodScreen />}
-    
     </ScrollView>
   );
 }
