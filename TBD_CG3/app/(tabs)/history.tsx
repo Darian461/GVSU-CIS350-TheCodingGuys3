@@ -49,7 +49,7 @@ const calorieData = [
   { x: new Date(2025, 10, 15), y: 1900 },
 ];
 
-const HorizontalLine = (yValue, color) => (
+const HorizontalLine = (yValue: number, color: string) => (
   <VictoryLine
     data={[
       { x: weightData[0].x, y: yValue },
