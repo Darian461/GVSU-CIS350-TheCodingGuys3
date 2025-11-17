@@ -1,48 +1,28 @@
 import { ThemedView } from "@/components/themed-view";
 import { Table, TableBody, TableData, TableRow } from "@/components/ui/table";
-import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Pressable, SearchIcon } from "@gluestack-ui/themed";
+import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Pressable, SearchIcon, Spinner } from "@gluestack-ui/themed";
 import { BadgePlus, Barcode } from 'lucide-react-native';
 import React from 'react';
 import { ScrollView } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import BarcodeScreen from '../foodSearch/barcode';
 import CreateFoodScreen from '../foodSearch/createFood';
+import { Text } from "@gluestack-ui/themed";
 
-// const Header = () => {
-//   const navigation = useNavigation<NavigationProp<any>>();
-//   return (
-//     <Box
-//       bg="$backgroundLight0"
-//       width="100%"
-//       px="$4"
-//       py="$3"
-//       borderBottomWidth={1}
-//       borderColor="$backgroundLight0" // to blend with TopNavBar
-//     >
-//       <HStack justifyContent="space-between" alignItems="center">
-//         <HStack alignItems="center" space="md">
-//           <Box
-//             bg="$backgroundLight200"
-//             width={40}
-//             height={40}
-//             rounded="$full"
-//             justifyContent="center"
-//             alignItems="center"
-//           >
-//             <Pressable onPress={() => navigation.navigate('(tabs)', { screen: 'index'})}>
-//               <Icon 
-//                 as={CloseIcon} 
-//                 color="$textLight500"/>
-//             </Pressable>
-//           </Box>
-//           <Text fontSize="$lg" fontWeight="$bold" color="$textLight800">
-//             Search
-//           </Text>
-//         </HStack>
-//       </HStack>
-//     </Box>
-//   );
-// };
+// for development
+const ip = 'use your ip';
+
+async function fetchData(searchTerm: string) {
+  try {
+    const response = await fetch(`${ip}/search-food/?query=${searchTerm}`);
+    const data = await response.json();
+    return data;
+  }
+  catch (error) {
+    console.error('Error fetching data: ', error);
+    return [];
+  }
+}
 
 const BUTTONS = [
   { key: 'search', icon: SearchIcon },
@@ -155,6 +135,25 @@ export default function FoodSearch() {
   // Track active button for TopNavBar
   const [activeButton, setActiveButton] = React.useState('search');
   const [searchText, setSearchText] = React.useState('');
+  const [searchResults, setSearchResults] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!searchText.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    setLoading(true);
+    const timer = setTimeout(async () => {
+      const data = await fetchData(searchText);
+      setSearchResults(data);
+      setLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchText]);
+
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -190,15 +189,36 @@ export default function FoodSearch() {
             )}
           </Input>
 
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableData/>
-              </TableRow>
-            </TableBody>
-          </Table>
+          {loading && (
+            <Box p="$4" alignItems="center">
+              <Spinner />
+            </Box>
+          )}
 
+          {!loading && searchResults.length > 0 && (
+            <Table>
+              <TableBody>
+                { searchResults.map((item) => (
+                  <TableRow key={item.fdcId}>
+                    <TableData>
+                      <Text fontWeight="$medium">{ item.description } </Text>
+                      { item.brandName && (
+                        <Text fontSize="$sm" color="$textLight500">
+                          { item.brandName }
+                        </Text>
+                      )}
+                    </TableData>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
 
+          { !loading && searchText.length > 0 && searchResults.length === 0 && (
+            <Box p="$4" alignItems="center">
+              <Text color="$textLight500">No results found</Text>
+            </Box>
+          )}
         </ThemedView>
       )}
 
