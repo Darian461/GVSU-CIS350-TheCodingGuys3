@@ -3,6 +3,13 @@
     "@gluestack-ui/config": "^1.1.20",
     "@gluestack-ui/themed": "^1.1.73",
     "@supabase/supabase-js": "^2.75.0",
+    "expo": "^54.0.23",
+    "expo-router": "^6.0.14",
+    "react": "^19.2.0",
+    "react-native": "^0.82.1",
     "react-native-svg": "^15.14.0"
+  },
+  "devDependencies": {
+    "metro-minify-terser": "^0.83.3"
   }
 }

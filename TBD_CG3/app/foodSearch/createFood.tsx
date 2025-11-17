@@ -1,3 +1,3 @@
-export default function BarcodeScreen() {
+export default function CreateFoodScreen() {
     return null;
 }
