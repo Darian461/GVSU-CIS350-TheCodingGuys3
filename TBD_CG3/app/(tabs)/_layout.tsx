@@ -2,7 +2,16 @@ import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { AddIcon, Box, CircleIcon, HStack, Icon, Pressable, SettingsIcon, Text } from "@gluestack-ui/themed";
+import {
+  AddIcon,
+  Box,
+  CircleIcon,
+  HStack,
+  Icon,
+  Pressable,
+  SettingsIcon,
+  Text,
+} from "@gluestack-ui/themed";
 import { Tabs, useRouter } from "expo-router";
 import React from "react";
 import { Platform, TouchableOpacity, View } from "react-native";
@@ -114,7 +123,7 @@ export default function Layout() {
                   zIndex: 10,
                 }}
               >
-                <Icon as={AddIcon} size="xl" color="color" />              
+                <Icon as={AddIcon} size="xl" color="color" />
               </TouchableOpacity>
             ),
           }}

@@ -1,16 +1,23 @@
-import { ThemedView } from '@/components/themed-view';
-import { AddIcon, Box, HStack, Icon, Pressable, Text, VStack } from "@gluestack-ui/themed";
-import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ThemedView } from "@/components/themed-view";
+import {
+  AddIcon,
+  Box,
+  HStack,
+  Icon,
+  Pressable,
+  Text,
+  VStack,
+} from "@gluestack-ui/themed";
+import React from "react";
+import { ScrollView, StyleSheet } from "react-native";
 import Svg from "react-native-svg";
-import { VictoryLabel, VictoryPie } from 'victory-native';
+import { VictoryLabel, VictoryPie } from "victory-native";
 
 const today = new Date().toLocaleDateString(undefined, {
-  weekday: 'long', // e.g., "Monday"
-  month: 'long',   // e.g., "October"
-  day: 'numeric',  // e.g., "27"
+  weekday: "long", // e.g., "Monday"
+  month: "long", // e.g., "October"
+  day: "numeric", // e.g., "27"
 });
-
 
 export default function HomeScreen() {
   const dailyGoal = 3500;
@@ -23,8 +30,7 @@ export default function HomeScreen() {
   ];
 
   return (
-    <ScrollView style={{backgroundColor: '#ffffffff' }}>
-
+    <ScrollView style={{ backgroundColor: "#ffffffff" }}>
       {/* Outer container for chart and boxes */}
       <ThemedView style={styles.container}>
         <VStack alignItems="center" space="lg">
@@ -84,16 +90,22 @@ export default function HomeScreen() {
             <StatBox title="Fats" value="60g" color="#facc15" />
             <StatBox title="Water" value="100ml" color="#2d05f6ff" />
           </HStack>
-
         </VStack>
       </ThemedView>
     </ScrollView>
   );
 }
 
-
 /* A reusable stat box */
-const StatBox = ({ title, value, color }: { title: string; value: string; color: string }) => (
+const StatBox = ({
+  title,
+  value,
+  color,
+}: {
+  title: string;
+  value: string;
+  color: string;
+}) => (
   <Box
     w={140}
     h={80}
@@ -106,15 +118,14 @@ const StatBox = ({ title, value, color }: { title: string; value: string; color:
     borderWidth={1}
     borderColor="$borderLight200"
   >
-    <Text style={{ fontSize: 14, fontWeight: '600', color, marginBottom: 4 }}>
+    <Text style={{ fontSize: 14, fontWeight: "600", color, marginBottom: 4 }}>
       {title}
     </Text>
-    <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#000' }}>
+    <Text style={{ fontSize: 18, fontWeight: "bold", color: "#000" }}>
       {value}
     </Text>
   </Box>
 );
-
 
 const styles = StyleSheet.create({
   container: {
