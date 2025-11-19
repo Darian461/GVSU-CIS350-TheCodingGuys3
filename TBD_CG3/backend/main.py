@@ -4,12 +4,18 @@ from . import models, schemas, auth
 from .database import engine, SessionLocal
 from fastapi.middleware.cors import CORSMiddleware
 from . import food_api
+from .weight_log_r import router as weight_router
+from .food_log_r import router as log_router
+
+
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
 app.include_router(food_api.router)
+app.include_router(weight_router, prefix="/weight", tags=["Weights"])
+app.include_router(log_router, prefix="/food_log", tags=["Food_Log"])
 
 
 app.add_middleware(
@@ -54,6 +60,6 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     if not db_user or not auth.verify_password(user.password, db_user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    token = auth.create_access_token({"sub": db_user.email})
+    token = auth.create_access_token({"sub": str(db_user.id)})
     return {"access_token": token, "token_type": "bearer"}
 
