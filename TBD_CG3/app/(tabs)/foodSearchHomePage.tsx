@@ -8,6 +8,7 @@ import { ScrollView, TouchableOpacity } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import BarcodeScreen from '../foodSearch/barcode';
 import CreateFoodScreen from '../foodSearch/createFood';
+import { getToken } from '../index';
 
 // for development
 const ip = 'your ip';
@@ -35,6 +36,70 @@ async function fetchFoodDetails(fdcId: number) {
     return null;
   }
 }
+
+async function addFoodToLog(foodData: {
+  food_name: string;
+  calories: number;
+  fat: number;
+  trans_fat?: number;
+  saturated_fat?: number;
+  carbs: number;
+  fiber?: number;
+  sugar?: number;
+  added_sugars?: number;
+  protein: number;
+  cholesterol?: number;
+  sodium?: number;
+  vitamin_a?: number;
+  vitamin_c?: number;
+  calcium?: number;
+  iron?: number;
+  potassium?: number;
+  caffeine?: number;
+  quantity?: number;
+}) {
+  try {
+    const token = await getToken();
+    
+    if (!token) {
+      throw new Error('No authentication token found. Please log in again.');
+    }
+    
+    const response = await fetch(`${ip}/food-log/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(foodData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to add food to log');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error adding food to log:', error);
+    throw error;
+  }
+}
+
+const getNutrientValue = (nutrients: any[], label: string): number => {
+  const nutrient = nutrients?.find(n => n.label === label);
+  if (!nutrient || nutrient.amount === null || nutrient.amount === undefined) {
+    return 0;
+  }
+  
+  // Convert kJ to kcal for calories
+  if (label === 'Calories' && nutrient.unit?.toLowerCase() === 'kj') {
+    return parseFloat((nutrient.amount / 4.184).toFixed(1));
+  }
+  
+  return parseFloat(nutrient.amount);
+};
 
 const BUTTONS = [
   { key: 'search', icon: SearchIcon },
@@ -174,6 +239,7 @@ export default function FoodSearch() {
 
   const handleFoodPress = async (item: any) => {
     setSelectedFood(item);
+    setFoodDetails(null);
     setShowModal(true);
     setLoadingDetails(true);
     
@@ -413,23 +479,47 @@ export default function FoodSearch() {
 
           <ModalFooter borderTopWidth={1} borderColor="$borderLight200">
             <Button
-              variant="outline"
-              action="secondary"
-              onPress={() => {
-                setShowModal(false);
-                setSelectedFood(null);
-                setFoodDetails(null);
-              }}
-            >
-              <ButtonText>Close</ButtonText>
-            </Button>
-            <Button
-              onPress={() => {
-                // TODO: adding selected food to food diary logic
-                console.log('Add to log:', foodDetails);
-                setShowModal(false);
-                setSelectedFood(null);
-                setFoodDetails(null);
+              onPress={async () => {
+                try {
+                  if (!foodDetails || !selectedFood) return;
+                  
+                  // Helper function to get nutrient value by label
+                  const getNutrientByLabel = (label: string): number => {
+                    return getNutrientValue(foodDetails.nutrients, label);
+                  };
+                  
+                  const foodLogData = {
+                    food_name: selectedFood.description,
+                    calories: getNutrientByLabel('Calories'),
+                    fat: getNutrientByLabel('Fat'),
+                    trans_fat: getNutrientByLabel('Trans Fat'),
+                    saturated_fat: getNutrientByLabel('Saturated Fat'),
+                    carbs: getNutrientByLabel('Carbs'),
+                    fiber: getNutrientByLabel('Fiber'),
+                    sugar: getNutrientByLabel('Sugar'),
+                    added_sugars: getNutrientByLabel('Added Sugars'),
+                    protein: getNutrientByLabel('Protein'),
+                    cholesterol: getNutrientByLabel('Cholesterol'),
+                    sodium: getNutrientByLabel('Sodium'),
+                    vitamin_a: getNutrientByLabel('Vitamin A'),
+                    vitamin_c: getNutrientByLabel('Vitamin C'),
+                    calcium: getNutrientByLabel('Calcium'),
+                    iron: getNutrientByLabel('Iron'),
+                    potassium: getNutrientByLabel('Potassium'),
+                    caffeine: getNutrientByLabel('Caffeine'),
+                    quantity: 1,
+                  };
+                  
+                  console.log('Sending complete food data:', foodLogData);
+                  
+                  await addFoodToLog(foodLogData);
+                  
+                  setShowModal(false);
+                  setSelectedFood(null);
+                  setFoodDetails(null);
+                } catch (error: any) {
+                  alert(error.message || 'Failed to add food to log');
+                }
               }}
             >
               <ButtonText>Add to Log</ButtonText>
