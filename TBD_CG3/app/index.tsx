@@ -40,13 +40,6 @@ const AuthScreen: React.FC = () => {
     return;
   }
 
-  // Password validation
-  const passwordRegex = /^(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,20}$/;
-  if (!passwordRegex.test(password)) {
-    alert("Password must be 8–20 characters and include at least one special character.");
-    return;
-  }
-
   try {
     const endpoint =
       mode === "login"
@@ -74,10 +67,13 @@ const AuthScreen: React.FC = () => {
 
     if (mode === "register") {
       alert("Account created successfully!");
-    } else {
-      alert("Logged in successfully!");
-      navigation.replace("Home");
+      setMode("login"); 
+      return;
     }
+
+    alert("Logged in successfully!");
+    navigation.replace('(tabs)');
+
   } catch (err) {
     console.error("Auth error:", err);
     alert("Network or server error");

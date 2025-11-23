@@ -13,7 +13,7 @@ class UserLogin(BaseModel):
     password: str
 
 class UserOut(BaseModel):
-    id: int
+    id: UUID
     username: str
     email: str
 

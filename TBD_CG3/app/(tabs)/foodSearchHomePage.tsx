@@ -10,7 +10,7 @@ import CreateFoodScreen from '../foodSearch/createFood';
 import { Text } from "@gluestack-ui/themed";
 
 // for development
-const ip = 'use your ip';
+const ip = 'http://172.18.231.219:8000';
 
 async function fetchData(searchTerm: string) {
   try {
