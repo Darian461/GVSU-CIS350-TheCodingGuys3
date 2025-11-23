@@ -1,16 +1,20 @@
 import { ThemedView } from "@/components/themed-view";
-import { Table, TableBody, TableData, TableRow } from "@/components/ui/table";
-import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Pressable, SearchIcon, Spinner } from "@gluestack-ui/themed";
+import { Button, ButtonText } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
+import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Modal, ModalBackdrop, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, Pressable, SearchIcon, Spinner, Text } from "@gluestack-ui/themed";
 import { BadgePlus, Barcode } from 'lucide-react-native';
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import BarcodeScreen from '../foodSearch/barcode';
 import CreateFoodScreen from '../foodSearch/createFood';
-import { Text } from "@gluestack-ui/themed";
 
 // for development
+<<<<<<< HEAD
 const ip = 'http://172.18.231.219:8000';
+=======
+const ip = 'your ip';
+>>>>>>> main
 
 async function fetchData(searchTerm: string) {
   try {
@@ -19,8 +23,20 @@ async function fetchData(searchTerm: string) {
     return data;
   }
   catch (error) {
-    console.error('Error fetching data: ', error);
+    // console.error('Error fetching data: ', error);
     return [];
+  }
+}
+
+async function fetchFoodDetails(fdcId: number) {
+  try {
+    const response = await fetch(`${ip}/food-details/${fdcId}`);
+    const data = await response.json();
+    return data;
+  }
+  catch (error) {
+    console.error('Error fetching food details:', error);
+    return null;
   }
 }
 
@@ -138,6 +154,12 @@ export default function FoodSearch() {
   const [searchResults, setSearchResults] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(false);
 
+  // Modal states
+  const [showModal, setShowModal] = React.useState(false);
+  const [selectedFood, setSelectedFood] = React.useState<any>(null);
+  const [foodDetails, setFoodDetails] = React.useState<any>(null);
+  const [loadingDetails, setLoadingDetails] = React.useState(false);
+
   React.useEffect(() => {
     if (!searchText.trim()) {
       setSearchResults([]);
@@ -154,77 +176,271 @@ export default function FoodSearch() {
     return () => clearTimeout(timer);
   }, [searchText]);
 
+  const handleFoodPress = async (item: any) => {
+    setSelectedFood(item);
+    setShowModal(true);
+    setLoadingDetails(true);
+    
+    const details = await fetchFoodDetails(item.fdcId);
+    setFoodDetails(details);
+    setLoadingDetails(false);
+  };
+
+  // Sort nutrients by calories, carbs, protein, then fats
+  const sortNutrients = (nutrients: any[]) => {
+    const order = ['Calories', 'Carbs', 'Protein', 'Fat'];
+    const nutrientMap = new Map(nutrients.map(n => [n.label, n]));
+    
+    const sorted = [];
+    
+    // Add priority nutrients first
+    for (const label of order) {
+      if (nutrientMap.has(label)) {
+        sorted.push(nutrientMap.get(label));
+        nutrientMap.delete(label);
+      }
+    }
+    
+    for (const nutrient of nutrients) {
+      if (nutrientMap.has(nutrient.label)) {
+        sorted.push(nutrient);
+      }
+    }
+    
+    return sorted;
+  };
+
+  // Format nutrient display values for kj to kcals
+  const formatNutrientValue = (nutrient: any) => {
+    if (nutrient.amount === null || nutrient.amount === undefined) {
+      return 'N/A';
+    }
+    
+    if (nutrient.label === 'Calories') {
+      const unit = nutrient.unit?.toLowerCase() || '';
+      let calories = nutrient.amount;
+      
+      // Convert kj to kcals
+      if (unit === 'kj') {
+        calories = (nutrient.amount / 4.184).toFixed(0);
+      }
+      
+      return `${calories} kcal`;
+    }
+    
+    return `${nutrient.amount}${nutrient.unit || ''}`;
+  };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <>
+      <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
 
-      {/* <Header /> -> commented out "Search" header to keep original header*/}
-      <TopNavBar activeButton={activeButton} setActiveButton={setActiveButton} />
+        <TopNavBar activeButton={activeButton} setActiveButton={setActiveButton} />
 
-      {activeButton === 'search' && (
-        
-        <ThemedView>
-          <Input
-            variant="rounded"
-            size="lg"
-            mx="$2"
-            my="$2">
+        {activeButton === 'search' && (
+          
+          <ThemedView>
+            <Input
+              variant="rounded"
+              size="lg"
+              mx="$2"
+              my="$2">
 
-            <InputSlot px="$2">
-              <InputIcon as={SearchIcon} color="$textLight500" />
-            </InputSlot>
-            
-            <InputField 
-              placeholder="Enter food name here..."
-              value={searchText}
-              onChangeText={setSearchText}
-            />
-            
-            {searchText.length > 0 && (
               <InputSlot px="$2">
-                <Pressable onPress={() => setSearchText('')}>
-                  <InputIcon as={CloseIcon} color="$textLight500" />
-                </Pressable>
+                <InputIcon as={SearchIcon} color="$textLight500" />
               </InputSlot>
+              
+              <InputField 
+                placeholder="Enter food name here..."
+                value={searchText}
+                onChangeText={setSearchText}
+              />
+              
+              {searchText.length > 0 && (
+                <InputSlot px="$2">
+                  <Pressable onPress={() => setSearchText('')}>
+                    <InputIcon as={CloseIcon} color="$textLight500" />
+                  </Pressable>
+                </InputSlot>
+              )}
+            </Input>
+
+            {loading && (
+              <Box p="$4" alignItems="center">
+                <Spinner />
+              </Box>
             )}
-          </Input>
 
-          {loading && (
-            <Box p="$4" alignItems="center">
-              <Spinner />
-            </Box>
-          )}
-
-          {!loading && searchResults.length > 0 && (
-            <Table>
-              <TableBody>
-                { searchResults.map((item) => (
-                  <TableRow key={item.fdcId}>
-                    <TableData>
-                      <Text fontWeight="$medium">{ item.description } </Text>
-                      { item.brandName && (
-                        <Text fontSize="$sm" color="$textLight500">
-                          { item.brandName }
-                        </Text>
-                      )}
-                    </TableData>
-                  </TableRow>
+            {!loading && searchResults.length > 0 && (
+              <Box>
+                {searchResults.map((item) => (
+                  <TouchableOpacity
+                    key={item.fdcId}
+                    onPress={() => handleFoodPress(item)}
+                    style={{
+                      padding: 16,
+                      borderBottomWidth: 1,
+                      borderBottomColor: '#e5e7eb',
+                    }}
+                  >
+                    <Text fontWeight="$medium">{item.description}</Text>
+                    {item.brandName && (
+                      <Text fontSize="$sm" color="$textLight500">
+                        {item.brandName}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
                 ))}
-              </TableBody>
-            </Table>
-          )}
+              </Box>
+            )}
 
-          { !loading && searchText.length > 0 && searchResults.length === 0 && (
-            <Box p="$4" alignItems="center">
-              <Text color="$textLight500">No results found</Text>
+            {!loading && searchText.length > 0 && searchResults.length === 0 && (
+              <Box p="$4" alignItems="center">
+                <Text color="$textLight500">No results found</Text>
+              </Box>
+            )}
+          </ThemedView>
+        )}
+
+        {activeButton === 'barcode' && <BarcodeScreen />}
+        {activeButton === 'create' && <CreateFoodScreen />}
+      </ScrollView>
+
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+          setSelectedFood(null);
+          setFoodDetails(null);
+        }}
+        size="lg"
+      >
+        <ModalBackdrop />
+        <ModalContent maxHeight="90%">
+          <ModalHeader borderBottomWidth={1} borderColor="$borderLight200">
+            <Box flex={1} pr="$8">
+              <Heading size="lg" numberOfLines={2}>
+                {selectedFood?.description || 'Food Details'}
+              </Heading>
+              {selectedFood?.brandName && (
+                <Text fontSize="$sm" color="$textLight500" mt="$1">
+                  {selectedFood.brandName}
+                </Text>
+              )}
             </Box>
-          )}
-        </ThemedView>
-      )}
+            <ModalCloseButton>
+              <Icon as={CloseIcon} />
+            </ModalCloseButton>
+          </ModalHeader>
 
-      {activeButton === 'barcode' && <BarcodeScreen />}
-      {activeButton === 'create' && <CreateFoodScreen />}
-    
-    </ScrollView>
+          <ScrollView style={{ maxHeight: '100%' }}>
+            <ModalBody>
+              {loadingDetails ? (
+                <Box py="$8" alignItems="center">
+                  <Spinner size="large" />
+                  <Text mt="$4" color="$textLight500">Loading nutrition info...</Text>
+                </Box>
+              ) : foodDetails ? (
+                <Box 
+                  bg="$white" 
+                  borderWidth={2} 
+                  borderColor="$black" 
+                  borderRadius="$md"
+                  mx="$2"
+                  my="$2"
+                  p="$4"
+                >
+                  {/* Nutrition Facts Header */}
+                  <Box 
+                    borderBottomWidth={8} 
+                    borderColor="$black" 
+                    pb="$2"
+                    mb="$3"
+                  >
+                    <Heading size="xl">
+                      Nutrition Facts
+                    </Heading>
+                  </Box>
+
+                  {/* Serving Size */}
+                  <Box borderBottomWidth={4} borderColor="$black" pb="$2" mb="$2">
+                    <Text fontSize="$sm">Serving size</Text>
+                    <Text fontSize="$md" fontWeight="$semibold">1 serving</Text>
+                  </Box>
+
+                  {/* Nutrients List */}
+                  <Box>
+                    {foodDetails.nutrients && foodDetails.nutrients.length > 0 ? (
+                      sortNutrients(foodDetails.nutrients).map((nutrient: any, index: number) => {
+                        const isCalories = nutrient.label === 'Calories';
+                        const isMajorNutrient = ['Fat', 'Carbs', 'Protein'].includes(nutrient.label);
+                        
+                        return (
+                          <Box
+                            key={index}
+                            borderBottomWidth={1}
+                            borderColor="$borderLight300"
+                            py="$2"
+                            flexDirection="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                          >
+                            <Text 
+                              fontWeight={isCalories || isMajorNutrient ? "$bold" : "$normal"}
+                              fontSize={isCalories ? "$xl" : "$md"}
+                            >
+                              {nutrient.label}
+                            </Text>
+                            <Text 
+                              fontWeight={isCalories || isMajorNutrient ? "$bold" : "$normal"}
+                              fontSize={isCalories ? "$xl" : "$md"}
+                            >
+                              {formatNutrientValue(nutrient)}
+                            </Text>
+                          </Box>
+                        );
+                      })
+                    ) : (
+                      <Text color="$textLight500" textAlign="center" py="$4">
+                        No nutrition information available
+                      </Text>
+                    )}
+                  </Box>
+                </Box>
+              ) : (
+                <Box py="$4" alignItems="center">
+                  <Text color="$textLight500">Failed to load nutrition information</Text>
+                </Box>
+              )}
+            </ModalBody>
+          </ScrollView>
+
+          <ModalFooter borderTopWidth={1} borderColor="$borderLight200">
+            <Button
+              variant="outline"
+              action="secondary"
+              onPress={() => {
+                setShowModal(false);
+                setSelectedFood(null);
+                setFoodDetails(null);
+              }}
+            >
+              <ButtonText>Close</ButtonText>
+            </Button>
+            <Button
+              onPress={() => {
+                // TODO: adding selected food to food diary logic
+                console.log('Add to log:', foodDetails);
+                setShowModal(false);
+                setSelectedFood(null);
+                setFoodDetails(null);
+              }}
+            >
+              <ButtonText>Add to Log</ButtonText>
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }
