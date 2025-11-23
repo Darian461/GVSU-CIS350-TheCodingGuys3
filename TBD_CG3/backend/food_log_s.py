@@ -1,24 +1,6 @@
 from pydantic import BaseModel
-from uuid import UUID
-from typing import List
 from datetime import date
-
-class UserCreate(BaseModel):
-    username: str
-    email: str
-    password: str
-
-class UserLogin(BaseModel):
-    identifier: str  
-    password: str
-
-class UserOut(BaseModel):
-    id: int
-    username: str
-    email: str
-
-    class Config:
-        from_attributes = True 
+from uuid import UUID
 
 class FoodLogBase(BaseModel):
     food_name: str
@@ -51,3 +33,4 @@ class FoodLogResponse(FoodLogBase):
     model_config = {
         "from_attributes": True
     }
+
