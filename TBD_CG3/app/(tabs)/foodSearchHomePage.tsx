@@ -1,16 +1,13 @@
 import { ThemedView } from "@/components/themed-view";
-import { Table, TableBody, TableData, TableRow } from "@/components/ui/table";
-import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Pressable, SearchIcon, Spinner } from "@gluestack-ui/themed";
+import { Button, ButtonText } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
+import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Modal, ModalBackdrop, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, Pressable, SearchIcon, Spinner, Text } from "@gluestack-ui/themed";
 import { BadgePlus, Barcode } from 'lucide-react-native';
 import React from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import BarcodeScreen from '../foodSearch/barcode';
 import CreateFoodScreen from '../foodSearch/createFood';
-import { Text } from "@gluestack-ui/themed";
-import { Modal, ModalBackdrop, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from '@gluestack-ui/themed';
-import { Button, ButtonText } from '@/components/ui/button';
-import { Heading } from '@/components/ui/heading';
 
 // for development
 const ip = 'your ip';
@@ -22,7 +19,7 @@ async function fetchData(searchTerm: string) {
     return data;
   }
   catch (error) {
-    console.error('Error fetching data: ', error);
+    // console.error('Error fetching data: ', error);
     return [];
   }
 }
