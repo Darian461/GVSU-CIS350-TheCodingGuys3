@@ -12,11 +12,68 @@ import {
   Heading,
   Input,
   InputField,
-  VStack
+  Toast,
+  ToastDescription,
+  ToastTitle,
+  VStack,
+  useToast,
 } from '@gluestack-ui/themed';
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView as RNScrollView } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, ScrollView as RNScrollView } from 'react-native';
 import { FoodFormErrors, NutrientField, Nutrients } from '../../interfaces';
+import { getToken } from '../index';
+
+const ip = 'your ip';
+
+async function addCustomFoodToLog(foodData: {
+  food_name: string;
+  calories: number;
+  fat: number;
+  trans_fat?: number;
+  saturated_fat?: number;
+  carbs: number;
+  fiber?: number;
+  sugar?: number;
+  added_sugars?: number;
+  protein: number;
+  cholesterol?: number;
+  sodium?: number;
+  vitamin_a?: number;
+  vitamin_c?: number;
+  calcium?: number;
+  iron?: number;
+  potassium?: number;
+  caffeine?: number;
+  quantity?: number;
+}) {
+  try {
+    const token = await getToken();
+    
+    if (!token) {
+      throw new Error('No authentication token found. Please log in again.');
+    }
+    
+    const response = await fetch(`${ip}/food-log/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(foodData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to add food to log');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error adding custom food to log:', error);
+    throw error;
+  }
+}
 
 const CreateFoodScreen: React.FC = () => {
   const [foodName, setFoodName] = useState<string>('');
@@ -41,6 +98,8 @@ const CreateFoodScreen: React.FC = () => {
   });
 
   const [errors, setErrors] = useState<FoodFormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const toast = useToast();
 
   const nutrientFields: NutrientField[] = [
     { key: 'calories', label: 'Energy (kcal)', unit: 'kcal' },
@@ -95,20 +154,87 @@ const CreateFoodScreen: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (): void => {
-    if (validateForm()) {
-      const foodData = {
-        name: foodName,
-        nutrients: Object.entries(nutrients).reduce((acc: Record<string, number>, [key, value]: [string, string]) => {
-          if (value) {
-            acc[key] = Number(value);
-          }
-          return acc;
-        }, {}),
+  const handleSubmit = async (): Promise<void> => {
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const foodLogData = {
+        food_name: foodName,
+        calories: Number(nutrients.calories) || 0,
+        fat: Number(nutrients.fat) || 0,
+        trans_fat: Number(nutrients['trans fat']) || 0,
+        saturated_fat: Number(nutrients['saturated fat']) || 0,
+        carbs: Number(nutrients.carbs) || 0,
+        fiber: Number(nutrients.fiber) || 0,
+        sugar: Number(nutrients.sugar) || 0,
+        added_sugars: Number(nutrients['added sugar']) || 0,
+        protein: Number(nutrients.protein) || 0,
+        cholesterol: Number(nutrients.cholesterol) || 0,
+        sodium: Number(nutrients.sodium) || 0,
+        vitamin_a: Number(nutrients['vitamin a']) || 0,
+        vitamin_c: Number(nutrients['vitamin c']) || 0,
+        calcium: Number(nutrients.calcium) || 0,
+        iron: Number(nutrients.iron) || 0,
+        potassium: Number(nutrients.potassium) || 0,
+        caffeine: Number(nutrients.caffeine) || 0,
+        quantity: 1,
       };
-      
-      console.log('Food data to submit:', foodData);
-      // api call to add food to db
+
+      console.log('Submitting custom food:', foodLogData);
+
+      await addCustomFoodToLog(foodLogData);
+
+      // Show success message
+      toast.show({
+        placement: "bottom",
+        render: ({ id }) => {
+          return (
+            <Toast nativeID={id} action="success" variant="solid">
+              <VStack space="xs">
+                <ToastTitle>Success!</ToastTitle>
+                <ToastDescription>
+                  {foodName} has been added to your food log
+                </ToastDescription>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+
+      // Reset form
+      setFoodName('');
+      setNutrients({
+        calories: '',
+        fat: '',
+        'trans fat': '',
+        'saturated fat': '',
+        carbs: '',
+        fiber: '',
+        sugar: '',
+        'added sugar': '',
+        protein: '',
+        cholesterol: '',
+        sodium: '',
+        'vitamin a': '',
+        'vitamin c': '',
+        calcium: '',
+        iron: '',
+        potassium: '',
+        caffeine: '',
+      });
+
+    } catch (error: any) {
+      console.error('Error submitting custom food:', error);
+      Alert.alert(
+        'Error',
+        error.message || 'Failed to add food to log. Please try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -203,8 +329,11 @@ const CreateFoodScreen: React.FC = () => {
               mb="$8"
               onPress={handleSubmit}
               bg="$primary600"
+              isDisabled={isSubmitting}
             >
-              <ButtonText>Create Food</ButtonText>
+              <ButtonText>
+                {isSubmitting ? 'Adding...' : 'Add to Food Log'}
+              </ButtonText>
             </Button>
           </VStack>
         </Box>
