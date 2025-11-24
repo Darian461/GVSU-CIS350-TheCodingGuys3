@@ -1,28 +1,51 @@
 import { ThemedView } from "@/components/themed-view";
 import { Table, TableBody, TableData, TableRow } from "@/components/ui/table";
-import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Pressable, SearchIcon, Spinner } from "@gluestack-ui/themed";
-import { BadgePlus, Barcode } from 'lucide-react-native';
-import React from 'react';
-import { ScrollView, TouchableOpacity } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import BarcodeScreen from '../foodSearch/barcode';
-import CreateFoodScreen from '../foodSearch/createFood';
+import {
+  Box,
+  CloseIcon,
+  HStack,
+  Icon,
+  Input,
+  InputField,
+  InputIcon,
+  InputSlot,
+  Pressable,
+  SearchIcon,
+  Spinner,
+} from "@gluestack-ui/themed";
+import { BadgePlus, Barcode } from "lucide-react-native";
+import React from "react";
+import { ScrollView, TouchableOpacity } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+import BarcodeScreen from "../foodSearch/barcode";
+import CreateFoodScreen from "../foodSearch/createFood";
 import { Text } from "@gluestack-ui/themed";
-import { Modal, ModalBackdrop, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from '@gluestack-ui/themed';
-import { Button, ButtonText } from '@/components/ui/button';
-import { Heading } from '@/components/ui/heading';
+import {
+  Modal,
+  ModalBackdrop,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+} from "@gluestack-ui/themed";
+import { Button, ButtonText } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
 
 // for development
-const ip = 'your ip';
+const ip = "http://192.168.1.141:8000";
 
 async function fetchData(searchTerm: string) {
   try {
     const response = await fetch(`${ip}/search-food/?query=${searchTerm}`);
     const data = await response.json();
     return data;
-  }
-  catch (error) {
-    console.error('Error fetching data: ', error);
+  } catch (error) {
+    console.error("Error fetching data: ", error);
     return [];
   }
 }
@@ -32,29 +55,33 @@ async function fetchFoodDetails(fdcId: number) {
     const response = await fetch(`${ip}/food-details/${fdcId}`);
     const data = await response.json();
     return data;
-  }
-  catch (error) {
-    console.error('Error fetching food details:', error);
+  } catch (error) {
+    console.error("Error fetching food details:", error);
     return null;
   }
 }
 
 const BUTTONS = [
-  { key: 'search', icon: SearchIcon },
-  { key: 'barcode', icon: Barcode },
-  { key: 'create', icon: BadgePlus },
+  { key: "search", icon: SearchIcon },
+  { key: "barcode", icon: Barcode },
+  { key: "create", icon: BadgePlus },
 ];
 
 const BUTTON_SIZE = 60;
 const HIGHLIGHT_SIZE = 44;
 const BUTTON_PADDING = 12;
 
-const TopNavBar = ({ activeButton, setActiveButton }: { 
-  activeButton: string; 
+const TopNavBar = ({
+  activeButton,
+  setActiveButton,
+}: {
+  activeButton: string;
   setActiveButton: (button: string) => void;
 }) => {
-  const [buttonLayouts, setButtonLayouts] = React.useState<Record<string, { x: number; width: number }>>({});
-  
+  const [buttonLayouts, setButtonLayouts] = React.useState<
+    Record<string, { x: number; width: number }>
+  >({});
+
   // Calculate position based on active button
   const getTargetPosition = () => {
     const activeLayout = buttonLayouts[activeButton];
@@ -79,9 +106,9 @@ const TopNavBar = ({ activeButton, setActiveButton }: {
 
   const handleLayout = (key: string, event: any) => {
     const { x, width } = event.nativeEvent.layout;
-    setButtonLayouts(prev => ({
+    setButtonLayouts((prev) => ({
       ...prev,
-      [key]: { x, width }
+      [key]: { x, width },
     }));
   };
 
@@ -96,29 +123,33 @@ const TopNavBar = ({ activeButton, setActiveButton }: {
       borderBottomWidth={1}
       borderColor="$borderLight200"
     >
-      <HStack justifyContent="space-around" alignItems="center" style={{ position: 'relative' }}>
+      <HStack
+        justifyContent="space-around"
+        alignItems="center"
+        style={{ position: "relative" }}
+      >
         {/* Animated highlight */}
         {showHighlight && (
           <Animated.View
             style={[
               {
-                position: 'absolute',
+                position: "absolute",
                 left: 0,
                 top: (BUTTON_SIZE - HIGHLIGHT_SIZE) / 2,
                 width: HIGHLIGHT_SIZE,
                 height: HIGHLIGHT_SIZE,
                 borderRadius: HIGHLIGHT_SIZE / 2,
-                backgroundColor: '#e5e7eb',
+                backgroundColor: "#e5e7eb",
                 opacity: 0.4,
               },
               highlightStyle,
             ]}
           />
         )}
-        
+
         {BUTTONS.map((btn) => {
           const isActive = btn.key === activeButton;
-          
+
           return (
             <Pressable
               key={btn.key}
@@ -127,15 +158,15 @@ const TopNavBar = ({ activeButton, setActiveButton }: {
               style={{
                 width: BUTTON_SIZE,
                 height: BUTTON_SIZE,
-                justifyContent: 'center',
-                alignItems: 'center',
+                justifyContent: "center",
+                alignItems: "center",
                 marginHorizontal: BUTTON_PADDING,
               }}
             >
-              <Icon 
-                as={btn.icon} 
-                color={isActive ? "$textLight700" : "$textLight500"} 
-                size="xl" 
+              <Icon
+                as={btn.icon}
+                color={isActive ? "$textLight700" : "$textLight500"}
+                size="xl"
               />
             </Pressable>
           );
@@ -146,10 +177,9 @@ const TopNavBar = ({ activeButton, setActiveButton }: {
 };
 
 export default function FoodSearch() {
-
   // Track active button for TopNavBar
-  const [activeButton, setActiveButton] = React.useState('search');
-  const [searchText, setSearchText] = React.useState('');
+  const [activeButton, setActiveButton] = React.useState("search");
+  const [searchText, setSearchText] = React.useState("");
   const [searchResults, setSearchResults] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(false);
 
@@ -179,7 +209,7 @@ export default function FoodSearch() {
     setSelectedFood(item);
     setShowModal(true);
     setLoadingDetails(true);
-    
+
     const details = await fetchFoodDetails(item.fdcId);
     setFoodDetails(details);
     setLoadingDetails(false);
@@ -187,11 +217,11 @@ export default function FoodSearch() {
 
   // Sort nutrients by calories, carbs, protein, then fats
   const sortNutrients = (nutrients: any[]) => {
-    const order = ['Calories', 'Carbs', 'Protein', 'Fat'];
-    const nutrientMap = new Map(nutrients.map(n => [n.label, n]));
-    
+    const order = ["Calories", "Carbs", "Protein", "Fat"];
+    const nutrientMap = new Map(nutrients.map((n) => [n.label, n]));
+
     const sorted = [];
-    
+
     // Add priority nutrients first
     for (const label of order) {
       if (nutrientMap.has(label)) {
@@ -199,65 +229,61 @@ export default function FoodSearch() {
         nutrientMap.delete(label);
       }
     }
-    
+
     for (const nutrient of nutrients) {
       if (nutrientMap.has(nutrient.label)) {
         sorted.push(nutrient);
       }
     }
-    
+
     return sorted;
   };
 
   // Format nutrient display values for kj to kcals
   const formatNutrientValue = (nutrient: any) => {
     if (nutrient.amount === null || nutrient.amount === undefined) {
-      return 'N/A';
+      return "N/A";
     }
-    
-    if (nutrient.label === 'Calories') {
-      const unit = nutrient.unit?.toLowerCase() || '';
+
+    if (nutrient.label === "Calories") {
+      const unit = nutrient.unit?.toLowerCase() || "";
       let calories = nutrient.amount;
-      
+
       // Convert kj to kcals
-      if (unit === 'kj') {
+      if (unit === "kj") {
         calories = (nutrient.amount / 4.184).toFixed(0);
       }
-      
+
       return `${calories} kcal`;
     }
-    
-    return `${nutrient.amount}${nutrient.unit || ''}`;
+
+    return `${nutrient.amount}${nutrient.unit || ""}`;
   };
 
   return (
     <>
-      <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
+        <TopNavBar
+          activeButton={activeButton}
+          setActiveButton={setActiveButton}
+        />
 
-        <TopNavBar activeButton={activeButton} setActiveButton={setActiveButton} />
-
-        {activeButton === 'search' && (
-          
+        {activeButton === "search" && (
           <ThemedView>
-            <Input
-              variant="rounded"
-              size="lg"
-              mx="$2"
-              my="$2">
-
+            <Input variant="rounded" size="lg" mx="$2" my="$2">
               <InputSlot px="$2">
                 <InputIcon as={SearchIcon} color="$textLight500" />
               </InputSlot>
-              
-              <InputField 
+
+              <InputField
                 placeholder="Enter food name here..."
                 value={searchText}
                 onChangeText={setSearchText}
               />
-              
+
               {searchText.length > 0 && (
                 <InputSlot px="$2">
-                  <Pressable onPress={() => setSearchText('')}>
+                  <Pressable onPress={() => setSearchText("")}>
                     <InputIcon as={CloseIcon} color="$textLight500" />
                   </Pressable>
                 </InputSlot>
@@ -279,7 +305,7 @@ export default function FoodSearch() {
                     style={{
                       padding: 16,
                       borderBottomWidth: 1,
-                      borderBottomColor: '#e5e7eb',
+                      borderBottomColor: "#e5e7eb",
                     }}
                   >
                     <Text fontWeight="$medium">{item.description}</Text>
@@ -293,16 +319,18 @@ export default function FoodSearch() {
               </Box>
             )}
 
-            {!loading && searchText.length > 0 && searchResults.length === 0 && (
-              <Box p="$4" alignItems="center">
-                <Text color="$textLight500">No results found</Text>
-              </Box>
-            )}
+            {!loading &&
+              searchText.length > 0 &&
+              searchResults.length === 0 && (
+                <Box p="$4" alignItems="center">
+                  <Text color="$textLight500">No results found</Text>
+                </Box>
+              )}
           </ThemedView>
         )}
 
-        {activeButton === 'barcode' && <BarcodeScreen />}
-        {activeButton === 'create' && <CreateFoodScreen />}
+        {activeButton === "barcode" && <BarcodeScreen />}
+        {activeButton === "create" && <CreateFoodScreen />}
       </ScrollView>
 
       <Modal
@@ -319,7 +347,7 @@ export default function FoodSearch() {
           <ModalHeader borderBottomWidth={1} borderColor="$borderLight200">
             <Box flex={1} pr="$8">
               <Heading size="lg" numberOfLines={2}>
-                {selectedFood?.description || 'Food Details'}
+                {selectedFood?.description || "Food Details"}
               </Heading>
               {selectedFood?.brandName && (
                 <Text fontSize="$sm" color="$textLight500" mt="$1">
@@ -332,73 +360,95 @@ export default function FoodSearch() {
             </ModalCloseButton>
           </ModalHeader>
 
-          <ScrollView style={{ maxHeight: '100%' }}>
+          <ScrollView style={{ maxHeight: "100%" }}>
             <ModalBody>
               {loadingDetails ? (
                 <Box py="$8" alignItems="center">
                   <Spinner size="large" />
-                  <Text mt="$4" color="$textLight500">Loading nutrition info...</Text>
+                  <Text mt="$4" color="$textLight500">
+                    Loading nutrition info...
+                  </Text>
                 </Box>
               ) : foodDetails ? (
-                <Box 
-                  bg="$white" 
-                  borderWidth={2} 
-                  borderColor="$black" 
+                <Box
+                  bg="$white"
+                  borderWidth={2}
+                  borderColor="$black"
                   borderRadius="$md"
                   mx="$2"
                   my="$2"
                   p="$4"
                 >
                   {/* Nutrition Facts Header */}
-                  <Box 
-                    borderBottomWidth={8} 
-                    borderColor="$black" 
+                  <Box
+                    borderBottomWidth={8}
+                    borderColor="$black"
                     pb="$2"
                     mb="$3"
                   >
-                    <Heading size="xl">
-                      Nutrition Facts
-                    </Heading>
+                    <Heading size="xl">Nutrition Facts</Heading>
                   </Box>
 
                   {/* Serving Size */}
-                  <Box borderBottomWidth={4} borderColor="$black" pb="$2" mb="$2">
+                  <Box
+                    borderBottomWidth={4}
+                    borderColor="$black"
+                    pb="$2"
+                    mb="$2"
+                  >
                     <Text fontSize="$sm">Serving size</Text>
-                    <Text fontSize="$md" fontWeight="$semibold">1 serving</Text>
+                    <Text fontSize="$md" fontWeight="$semibold">
+                      1 serving
+                    </Text>
                   </Box>
 
                   {/* Nutrients List */}
                   <Box>
-                    {foodDetails.nutrients && foodDetails.nutrients.length > 0 ? (
-                      sortNutrients(foodDetails.nutrients).map((nutrient: any, index: number) => {
-                        const isCalories = nutrient.label === 'Calories';
-                        const isMajorNutrient = ['Fat', 'Carbs', 'Protein'].includes(nutrient.label);
-                        
-                        return (
-                          <Box
-                            key={index}
-                            borderBottomWidth={1}
-                            borderColor="$borderLight300"
-                            py="$2"
-                            flexDirection="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                          >
-                            <Text 
-                              fontWeight={isCalories || isMajorNutrient ? "$bold" : "$normal"}
-                              fontSize={isCalories ? "$xl" : "$md"}
+                    {foodDetails.nutrients &&
+                    foodDetails.nutrients.length > 0 ? (
+                      sortNutrients(foodDetails.nutrients).map(
+                        (nutrient: any, index: number) => {
+                          const isCalories = nutrient.label === "Calories";
+                          const isMajorNutrient = [
+                            "Fat",
+                            "Carbs",
+                            "Protein",
+                          ].includes(nutrient.label);
+
+                          return (
+                            <Box
+                              key={index}
+                              borderBottomWidth={1}
+                              borderColor="$borderLight300"
+                              py="$2"
+                              flexDirection="row"
+                              justifyContent="space-between"
+                              alignItems="center"
                             >
-                              {nutrient.label}
-                            </Text>
-                            <Text 
-                              fontWeight={isCalories || isMajorNutrient ? "$bold" : "$normal"}
-                              fontSize={isCalories ? "$xl" : "$md"}
-                            >
-                              {formatNutrientValue(nutrient)}
-                            </Text>
-                          </Box>
-                        );
-                      })
+                              <Text
+                                fontWeight={
+                                  isCalories || isMajorNutrient
+                                    ? "$bold"
+                                    : "$normal"
+                                }
+                                fontSize={isCalories ? "$xl" : "$md"}
+                              >
+                                {nutrient.label}
+                              </Text>
+                              <Text
+                                fontWeight={
+                                  isCalories || isMajorNutrient
+                                    ? "$bold"
+                                    : "$normal"
+                                }
+                                fontSize={isCalories ? "$xl" : "$md"}
+                              >
+                                {formatNutrientValue(nutrient)}
+                              </Text>
+                            </Box>
+                          );
+                        }
+                      )
                     ) : (
                       <Text color="$textLight500" textAlign="center" py="$4">
                         No nutrition information available
@@ -408,7 +458,9 @@ export default function FoodSearch() {
                 </Box>
               ) : (
                 <Box py="$4" alignItems="center">
-                  <Text color="$textLight500">Failed to load nutrition information</Text>
+                  <Text color="$textLight500">
+                    Failed to load nutrition information
+                  </Text>
                 </Box>
               )}
             </ModalBody>
@@ -429,7 +481,7 @@ export default function FoodSearch() {
             <Button
               onPress={() => {
                 // TODO: adding selected food to food diary logic
-                console.log('Add to log:', foodDetails);
+                console.log("Add to log:", foodDetails);
                 setShowModal(false);
                 setSelectedFood(null);
                 setFoodDetails(null);
