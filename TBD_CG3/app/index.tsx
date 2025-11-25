@@ -13,7 +13,7 @@ import {
 import "react-native-url-polyfill/auto";
 
 // FastAPI host IP
-const API_BASE = "your ip";
+const API_BASE = "http://35.38.194.181:8000";
 
 type AuthMode = "login" | "register";
 

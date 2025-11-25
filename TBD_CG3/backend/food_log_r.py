@@ -7,6 +7,8 @@ from .auth import get_current_user_id
 
 router = APIRouter()
 
+
+
 # Add a food to daily log
 @router.post("/", response_model=schemas.FoodLogResponse)
 def add_food_log(

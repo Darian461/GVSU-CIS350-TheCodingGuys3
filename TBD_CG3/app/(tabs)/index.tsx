@@ -5,45 +5,52 @@ import { Box, HStack, Text, VStack } from "@gluestack-ui/themed";
 import Svg from "react-native-svg";
 import { VictoryLabel, VictoryPie } from "victory-native";
 import { getToken } from "../index";
+import { useFocusEffect } from "@react-navigation/native";
 
 // for development
-const ip = "http://192.168.1.141:8000";
+const ip = "http://35.38.194.181:8000";
 export default function HomeScreen() {
   const [totals, setTotals] = useState<any>(null);
 
-  useEffect(() => {
-    async function loadTotals() {
-      try {
-        const token = await getToken();
-        if (!token) {
-          console.log("No token found");
-          return;
-        }
-        const res = await fetch(`${ip}/food_log/today/totals`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+  async function loadTotals() {
+    try {
+      const token = await getToken();
+      console.log("Fetching with token:", token);
 
-        if (!res.ok) {
-          console.log("Fetch error:", await res.text());
-          return;
-        }
-
-        const data = await res.json();
-        setTotals(data);
-        console.log("DATA FROM API:", data);
-      } catch (err) {
-        console.error("Error loading totals:", err);
+      if (!token) {
+        console.log("No token found");
+        return;
       }
-    }
 
-    loadTotals();
-  }, []);
+      const res = await fetch(`${ip}/food-log/today/totals`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Status:", res.status);
+      const text = await res.text();
+      console.log("Raw response:", text);
+
+      if (!res.ok) return;
+
+      const data = JSON.parse(text);
+      setTotals(data);
+    } catch (err) {
+      console.error("Fetch failed:", err);
+    }
+  }
+
+  // 🔥 This runs every time the screen becomes active again
+  useFocusEffect(
+    React.useCallback(() => {
+      loadTotals();
+    }, [])
+  );
 
   if (!totals) {
-    return <Text>Loading...</Text>;
+    return <Text>No totals...</Text>;
   }
 
   const dailyGoal = 3500;

@@ -1,25 +1,48 @@
 import { ThemedView } from "@/components/themed-view";
-import { Button, ButtonText } from '@/components/ui/button';
-import { Heading } from '@/components/ui/heading';
-import { Box, CloseIcon, HStack, Icon, Input, InputField, InputIcon, InputSlot, Modal, ModalBackdrop, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, Pressable, SearchIcon, Spinner, Text } from "@gluestack-ui/themed";
-import { BadgePlus, Barcode } from 'lucide-react-native';
-import React from 'react';
-import { ScrollView, TouchableOpacity } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import BarcodeScreen from '../foodSearch/barcode';
-import CreateFoodScreen from '../foodSearch/createFood';
-import { getToken } from '../index';
+import { Button, ButtonText } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
+import {
+  Box,
+  CloseIcon,
+  HStack,
+  Icon,
+  Input,
+  InputField,
+  InputIcon,
+  InputSlot,
+  Modal,
+  ModalBackdrop,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Pressable,
+  SearchIcon,
+  Spinner,
+  Text,
+} from "@gluestack-ui/themed";
+import { BadgePlus, Barcode } from "lucide-react-native";
+import React from "react";
+import { ScrollView, TouchableOpacity } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+import BarcodeScreen from "../foodSearch/barcode";
+import CreateFoodScreen from "../foodSearch/createFood";
+import { getToken } from "../index";
 
 // for development
-const ip = "http://192.168.1.141:8000";
+const ip = "http://35.38.194.181:8000";
 
 async function fetchData(searchTerm: string) {
   try {
     const response = await fetch(`${ip}/search-food/?query=${searchTerm}`);
     const data = await response.json();
     return data;
-  }
-  catch (error) {
+  } catch (error) {
     // console.error('Error fetching data: ', error);
     return [];
   }
@@ -59,44 +82,44 @@ async function addFoodToLog(foodData: {
 }) {
   try {
     const token = await getToken();
-    
+
     if (!token) {
-      throw new Error('No authentication token found. Please log in again.');
+      throw new Error("No authentication token found. Please log in again.");
     }
-    
+
     const response = await fetch(`${ip}/food-log/`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(foodData),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.detail || 'Failed to add food to log');
+      throw new Error(errorData.detail || "Failed to add food to log");
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error adding food to log:', error);
+    console.error("Error adding food to log:", error);
     throw error;
   }
 }
 
 const getNutrientValue = (nutrients: any[], label: string): number => {
-  const nutrient = nutrients?.find(n => n.label === label);
+  const nutrient = nutrients?.find((n) => n.label === label);
   if (!nutrient || nutrient.amount === null || nutrient.amount === undefined) {
     return 0;
   }
-  
+
   // Convert kJ to kcal for calories
-  if (label === 'Calories' && nutrient.unit?.toLowerCase() === 'kj') {
+  if (label === "Calories" && nutrient.unit?.toLowerCase() === "kj") {
     return parseFloat((nutrient.amount / 4.184).toFixed(1));
   }
-  
+
   return parseFloat(nutrient.amount);
 };
 
@@ -511,43 +534,43 @@ export default function FoodSearch() {
               onPress={async () => {
                 try {
                   if (!foodDetails || !selectedFood) return;
-                  
+
                   // Helper function to get nutrient value by label
                   const getNutrientByLabel = (label: string): number => {
                     return getNutrientValue(foodDetails.nutrients, label);
                   };
-                  
+
                   const foodLogData = {
                     food_name: selectedFood.description,
-                    calories: getNutrientByLabel('Calories'),
-                    fat: getNutrientByLabel('Fat'),
-                    trans_fat: getNutrientByLabel('Trans Fat'),
-                    saturated_fat: getNutrientByLabel('Saturated Fat'),
-                    carbs: getNutrientByLabel('Carbs'),
-                    fiber: getNutrientByLabel('Fiber'),
-                    sugar: getNutrientByLabel('Sugar'),
-                    added_sugars: getNutrientByLabel('Added Sugars'),
-                    protein: getNutrientByLabel('Protein'),
-                    cholesterol: getNutrientByLabel('Cholesterol'),
-                    sodium: getNutrientByLabel('Sodium'),
-                    vitamin_a: getNutrientByLabel('Vitamin A'),
-                    vitamin_c: getNutrientByLabel('Vitamin C'),
-                    calcium: getNutrientByLabel('Calcium'),
-                    iron: getNutrientByLabel('Iron'),
-                    potassium: getNutrientByLabel('Potassium'),
-                    caffeine: getNutrientByLabel('Caffeine'),
+                    calories: getNutrientByLabel("Calories"),
+                    fat: getNutrientByLabel("Fat"),
+                    trans_fat: getNutrientByLabel("Trans Fat"),
+                    saturated_fat: getNutrientByLabel("Saturated Fat"),
+                    carbs: getNutrientByLabel("Carbs"),
+                    fiber: getNutrientByLabel("Fiber"),
+                    sugar: getNutrientByLabel("Sugar"),
+                    added_sugars: getNutrientByLabel("Added Sugars"),
+                    protein: getNutrientByLabel("Protein"),
+                    cholesterol: getNutrientByLabel("Cholesterol"),
+                    sodium: getNutrientByLabel("Sodium"),
+                    vitamin_a: getNutrientByLabel("Vitamin A"),
+                    vitamin_c: getNutrientByLabel("Vitamin C"),
+                    calcium: getNutrientByLabel("Calcium"),
+                    iron: getNutrientByLabel("Iron"),
+                    potassium: getNutrientByLabel("Potassium"),
+                    caffeine: getNutrientByLabel("Caffeine"),
                     quantity: 1,
                   };
-                  
-                  console.log('Sending complete food data:', foodLogData);
-                  
+
+                  console.log("Sending complete food data:", foodLogData);
+
                   await addFoodToLog(foodLogData);
-                  
+
                   setShowModal(false);
                   setSelectedFood(null);
                   setFoodDetails(null);
                 } catch (error: any) {
-                  alert(error.message || 'Failed to add food to log');
+                  alert(error.message || "Failed to add food to log");
                 }
               }}
             >
