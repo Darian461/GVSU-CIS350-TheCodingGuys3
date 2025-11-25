@@ -39,19 +39,19 @@ An intuitive, modern, easy-to-use all-in-one fitness web application that includ
 <b>R16</b>: In the "Search Food" home page, when the user clicks on a food entry within the table, on successful load of a food entry, if no nutrition facts are available, a pop-up notifying the user, "No nutrition information available" will be displayed. </br>
 <b>R16</b>: On successful add of a food entry, the user shall be presented with a "Success" message and the food will be added to the user profile's database history. </br>
 <b>R17</b>: On unsuccessful add of a food entry, the user shall be presented with an error message stating, "Failed to add food to log". </br>
-<b>R18</b> On navigation to the "Search Food" home page, the user shall have the ability to click on the buttons for "Search Food" and "Create New Food" in the top navigation bar. </br>
-<b>R19</b> In the "Create New Food" page, the user shall be presented with a template to create a new food. </br>
-<b>R20</b> In the "Create New Food" page, the user shall be able to enter the food name, energy (calories), total fat, trans fat, and other macro/micronutrients of the food. </br>
-<b>R21</b> In the "Create New Food" page, when the user clicks on the "Add to Food Log" button, on successful add, the user shall be presented with a "Success" message and the food will be added to the user's profile's database history. </br>
-<b>R22</b> In the "Create New Food" page, when the user clicks on the "Add to Food Log" button, on unsuccessful add, the user shall be presented with an error message stating, "Failed to add food to log. Please try again." </br>
-<b>R23</b> In the "Stats" page, the user shall be presented with a daily visual breakdown of Fats, Protein, and Carbs. </br>
-<b>R24</b> In the "Stats" page, the user shall be presented with a daily nutrient breakdown of Calories, Fat, Tr. Fat, Sat. Fat, Carbs, and other macro/micronutrients </br>
-<b>R25</b> In the "History" page, the user shall be presented with the "Weight Progress" chart. </br>
-<b>R26</b> In the "History" page, the user shall be presented with the "Starting", "Current", and "Goal" weights table. </br>
-<b>R27</b> In the "History" page, the user shall be able to log a new weight upon clicking the "+ Log New Weight" button </br>
-<b>R28</b> In the "History" page, upon clicking the "Calories" tab, the user shall be presented with the "Calories History" chart. </br>
-<b>R29</b> In the "History" page, upon clicking the "Calories" tab, the user shall be presented with the "Daily Goal", "Average", "Lowest Day", and "Highest Day" calorie table. </br>
-<b>R30</b> In the "Settings" page, upon clicking the "Sign Out" button, the user shall be logged out of the account and navigated to the Login page. </br>
+<b>R18</b>: On navigation to the "Search Food" home page, the user shall have the ability to click on the buttons for "Search Food" and "Create New Food" in the top navigation bar. </br>
+<b>R19</b>: In the "Create New Food" page, the user shall be presented with a template to create a new food. </br>
+<b>R20</b>: In the "Create New Food" page, the user shall be able to enter the food name, energy (calories), total fat, trans fat, and other macro/micronutrients of the food. </br>
+<b>R21</b>: In the "Create New Food" page, when the user clicks on the "Add to Food Log" button, on successful add, the user shall be presented with a "Success" message and the food will be added to the user's profile's database history. </br>
+<b>R22</b>: In the "Create New Food" page, when the user clicks on the "Add to Food Log" button, on unsuccessful add, the user shall be presented with an error message stating, "Failed to add food to log. Please try again." </br>
+<b>R23</b>: In the "Stats" page, the user shall be presented with a daily visual breakdown of Fats, Protein, and Carbs. </br>
+<b>R24</b>: In the "Stats" page, the user shall be presented with a daily nutrient breakdown of Calories, Fat, Tr. Fat, Sat. Fat, Carbs, and other macro/micronutrients </br>
+<b>R25</b>: In the "History" page, the user shall be presented with the "Weight Progress" chart. </br>
+<b>R26</b>: In the "History" page, the user shall be presented with the "Starting", "Current", and "Goal" weights table. </br>
+<b>R27</b>: In the "History" page, the user shall be able to log a new weight upon clicking the "+ Log New Weight" button </br>
+<b>R28</b>: In the "History" page, upon clicking the "Calories" tab, the user shall be presented with the "Calories History" chart. </br>
+<b>R29</b>: In the "History" page, upon clicking the "Calories" tab, the user shall be presented with the "Daily Goal", "Average", "Lowest Day", and "Highest Day" calorie table. </br>
+<b>R30</b>: In the "Settings" page, upon clicking the "Sign Out" button, the user shall be logged out of the account and navigated to the Login page. </br>
 
 ## Non-Functional Requirements
 <b>NR1</b>: All user login information shall be encrypted in the PostgreSQL database. <br>
@@ -75,7 +75,7 @@ An intuitive, modern, easy-to-use all-in-one fitness web application that includ
     <li>The ability to login and create new accounts with their own account history.</li>
 </ol>
 
-# Technologies
+# Anticipated Technologies
 <ol>
     <li>React Native</li>
         <ol>
