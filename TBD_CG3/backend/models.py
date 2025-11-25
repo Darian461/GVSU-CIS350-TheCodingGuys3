@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Float, ForeignKey, Date
+from sqlalchemy import Column, String, Float, ForeignKey, Date, DateTime
 from pydantic import BaseModel
 from sqlalchemy.dialects.postgresql import UUID
 from .database import Base, engine

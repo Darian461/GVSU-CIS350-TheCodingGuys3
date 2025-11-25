@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from uuid import UUID
 from typing import List
-from datetime import date
+from datetime import date, datetime
 
 class UserCreate(BaseModel):
     username: str
@@ -13,7 +13,7 @@ class UserLogin(BaseModel):
     password: str
 
 class UserOut(BaseModel):
-    id: int
+    id: UUID
     username: str
     email: str
 
@@ -51,3 +51,14 @@ class FoodLogResponse(FoodLogBase):
     model_config = {
         "from_attributes": True
     }
+
+class WeightLogCreate(BaseModel):
+    weight: float 
+
+class WeightLogOut(BaseModel):
+    id: UUID
+    weight: float
+    logged_at: datetime
+
+    class Config:
+        orm_mode = True

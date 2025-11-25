@@ -9,11 +9,11 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image
 } from "react-native";
 import 'react-native-url-polyfill/auto';
 
-// FastAPI host IP
-const API_BASE = "your ip";
+const API_BASE = "http://172.18.224.1:8000";
 
 type AuthMode = "login" | "register";
 
@@ -50,7 +50,6 @@ const AuthScreen: React.FC = () => {
   const navigation = useNavigation<any>();
 
   const handleAuth = async () => {
-    // Text validation
     if (mode === "register" && !username.trim()) {
       alert("Please enter a username.");
       return;
@@ -84,29 +83,27 @@ const AuthScreen: React.FC = () => {
       });
 
       const data = await response.json();
-      console.log("Response:", data);
 
       if (!response.ok) {
-        alert(`${data.detail || "Something went wrong"}`);
+        alert(data.detail || "Something went wrong.");
         return;
       }
 
       if (mode === "register") {
-        alert("Account created successfully! Please log in.");
+        alert("Account created successfully. Please log in.");
         setMode("login");
         setPassword("");
       } else {
         if (data.access_token) {
           await storeToken(data.access_token);
-          alert("Logged in successfully!");
-          navigation.replace("Home");
+          navigation.replace("(tabs)");
         } else {
-          alert("Login successful but no token received");
+          alert("Login successful but no token received.");
         }
       }
     } catch (err) {
       console.error("Auth error:", err);
-      alert("Network or server error");
+      alert("Network or server error.");
     }
   };
 
@@ -116,8 +113,18 @@ const AuthScreen: React.FC = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.card}>
+
+        {/* LOGO */}
+        <Image
+          source={require("../assets/images/macal_logo.png")}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+
         <Text style={styles.appTitle}>macal</Text>
-        <Text style={styles.dateText}>Welcome {mode === "login" ? "Back" : "Aboard"} 👋</Text>
+        <Text style={styles.subtitle}>
+          {mode === "login" ? "Login to your account" : "Create a new account"}
+        </Text>
 
         {mode === "register" && (
           <TextInput
@@ -154,15 +161,14 @@ const AuthScreen: React.FC = () => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => setMode(mode === "login" ? "register" : "login")}
-        >
+        <TouchableOpacity onPress={() => setMode(mode === "login" ? "register" : "login")}>
           <Text style={styles.toggleText}>
             {mode === "login"
               ? "Don't have an account? Sign up"
               : "Already have an account? Log in"}
           </Text>
         </TouchableOpacity>
+
       </View>
     </KeyboardAvoidingView>
   );
@@ -191,16 +197,21 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 4,
   },
+  logo: {
+    width: 80,
+    height: 80,
+    marginBottom: 10,
+  },
   appTitle: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: "700",
     color: "#111827",
-    marginBottom: 4,
+    marginBottom: 6,
   },
-  dateText: {
+  subtitle: {
     fontSize: 15,
     color: "#6B7280",
-    marginBottom: 28,
+    marginBottom: 30,
   },
   input: {
     width: "100%",
@@ -215,14 +226,14 @@ const styles = StyleSheet.create({
     color: "#111827",
   },
   button: {
-    backgroundColor: "#6366F1",
+    backgroundColor: "#3B82F6",
     borderRadius: 14,
     width: "100%",
     paddingVertical: 16,
     marginTop: 4,
   },
   buttonText: {
-    color: "#FFF",
+    color: "#FFFFFF",
     fontWeight: "600",
     textAlign: "center",
     fontSize: 16,
@@ -234,3 +245,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
+

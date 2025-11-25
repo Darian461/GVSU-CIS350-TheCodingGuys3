@@ -2,8 +2,9 @@ from pydantic import BaseModel
 from datetime import datetime
 from uuid import UUID
 
+
 class WeightLogCreate(BaseModel):
-    weight: float
+    weight: float 
 
 class WeightLogOut(BaseModel):
     id: UUID
