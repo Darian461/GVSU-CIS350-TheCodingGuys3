@@ -15,7 +15,7 @@ app = FastAPI()
 
 app.include_router(food_api.router)
 app.include_router(weight_router, prefix="/weight", tags=["Weights"])
-app.include_router(log_router, prefix="/food_log", tags=["Food_Log"])
+app.include_router(log_router, prefix="/food-log", tags=["Food_Log"])
 
 
 app.add_middleware(

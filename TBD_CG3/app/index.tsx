@@ -1,20 +1,46 @@
-import 'react-native-url-polyfill/auto';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
-  View,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
+  View,
+  Image
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import 'react-native-url-polyfill/auto';
 
-// FastAPI host IP
-const API_BASE = "http://172.18.231.219:8000";
+const API_BASE = "http://172.18.224.1:8000";
 
 type AuthMode = "login" | "register";
+
+export const storeToken = async (token: string) => {
+  try {
+    await AsyncStorage.setItem('authToken', token);
+  } catch (error) {
+    console.error('Error storing token:', error);
+  }
+};
+
+export const getToken = async () => {
+  try {
+    return await AsyncStorage.getItem('authToken');
+  } catch (error) {
+    console.error('Error getting token:', error);
+    return null;
+  }
+};
+
+export const removeToken = async () => {
+  try {
+    await AsyncStorage.removeItem('authToken');
+  } catch (error) {
+    console.error('Error removing token:', error);
+  }
+};
 
 const AuthScreen: React.FC = () => {
   const [mode, setMode] = useState<AuthMode>("login");
@@ -24,62 +50,62 @@ const AuthScreen: React.FC = () => {
   const navigation = useNavigation<any>();
 
   const handleAuth = async () => {
-  // Text validation
-  if (mode === "register" && !username.trim()) {
-    alert("Please enter a username.");
-    return;
-  }
-
-  if (!email.trim()) {
-    alert("Please enter your email or username.");
-    return;
-  }
-
-  if (!password.trim()) {
-    alert("Please enter your password.");
-    return;
-  }
-
-  try {
-    const endpoint =
-      mode === "login"
-        ? `${API_BASE}/login`
-        : `${API_BASE}/register`;
-
-    const payload =
-      mode === "login"
-        ? { identifier: email, password }
-        : { username, email, password };
-
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await response.json();
-    console.log("Response:", data);
-
-    if (!response.ok) {
-      alert(`${data.detail || "Something went wrong"}`);
+    if (mode === "register" && !username.trim()) {
+      alert("Please enter a username.");
       return;
     }
 
-    if (mode === "register") {
-      alert("Account created successfully!");
-      setMode("login"); 
+    if (!email.trim()) {
+      alert("Please enter your email or username.");
       return;
     }
 
-    alert("Logged in successfully!");
-    navigation.replace('(tabs)');
+    if (!password.trim()) {
+      alert("Please enter your password.");
+      return;
+    }
 
-  } catch (err) {
-    console.error("Auth error:", err);
-    alert("Network or server error");
-  }
-};
+    try {
+      const endpoint =
+        mode === "login"
+          ? `${API_BASE}/login`
+          : `${API_BASE}/register`;
 
+      const payload =
+        mode === "login"
+          ? { identifier: email, password }
+          : { username, email, password };
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.detail || "Something went wrong.");
+        return;
+      }
+
+      if (mode === "register") {
+        alert("Account created successfully. Please log in.");
+        setMode("login");
+        setPassword("");
+      } else {
+        if (data.access_token) {
+          await storeToken(data.access_token);
+          navigation.replace("(tabs)");
+        } else {
+          alert("Login successful but no token received.");
+        }
+      }
+    } catch (err) {
+      console.error("Auth error:", err);
+      alert("Network or server error.");
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -87,8 +113,18 @@ const AuthScreen: React.FC = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.card}>
+
+        {/* LOGO */}
+        <Image
+          source={require("../assets/images/macal_logo.png")}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+
         <Text style={styles.appTitle}>macal</Text>
-        <Text style={styles.dateText}>Welcome {mode === "login" ? "Back" : "Aboard"} 👋</Text>
+        <Text style={styles.subtitle}>
+          {mode === "login" ? "Login to your account" : "Create a new account"}
+        </Text>
 
         {mode === "register" && (
           <TextInput
@@ -125,15 +161,14 @@ const AuthScreen: React.FC = () => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => setMode(mode === "login" ? "register" : "login")}
-        >
+        <TouchableOpacity onPress={() => setMode(mode === "login" ? "register" : "login")}>
           <Text style={styles.toggleText}>
             {mode === "login"
-              ? "Don’t have an account? Sign up"
+              ? "Don't have an account? Sign up"
               : "Already have an account? Log in"}
           </Text>
         </TouchableOpacity>
+
       </View>
     </KeyboardAvoidingView>
   );
@@ -162,16 +197,21 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 4,
   },
+  logo: {
+    width: 80,
+    height: 80,
+    marginBottom: 10,
+  },
   appTitle: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: "700",
     color: "#111827",
-    marginBottom: 4,
+    marginBottom: 6,
   },
-  dateText: {
+  subtitle: {
     fontSize: 15,
     color: "#6B7280",
-    marginBottom: 28,
+    marginBottom: 30,
   },
   input: {
     width: "100%",
@@ -186,14 +226,14 @@ const styles = StyleSheet.create({
     color: "#111827",
   },
   button: {
-    backgroundColor: "#6366F1",
+    backgroundColor: "#3B82F6",
     borderRadius: 14,
     width: "100%",
     paddingVertical: 16,
     marginTop: 4,
   },
   buttonText: {
-    color: "#FFF",
+    color: "#FFFFFF",
     fontWeight: "600",
     textAlign: "center",
     fontSize: 16,
@@ -205,3 +245,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
+

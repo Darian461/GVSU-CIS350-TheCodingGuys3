@@ -41,7 +41,20 @@ def get_today_logs(db: Session = Depends(get_db), current_user = Depends(get_cur
 def get_today_totals(db: Session = Depends(get_db), current_user = Depends(get_current_user_id)):
     from datetime import date
     today = date.today()
+
     logs = db.query(models.FoodLog).filter(
         models.FoodLog.user_id == current_user["id"],
         models.FoodLog.date == today
     ).all()
+
+    totals = {
+        "date": str(today),
+        "total_calories": sum(log.calories for log in logs),
+        "total_protein": sum(log.protein for log in logs),
+        "total_carbs": sum(log.carbs for log in logs),
+        "total_fat": sum(log.fat for log in logs),
+        "items_logged": len(logs)
+    }
+
+    return totals
+

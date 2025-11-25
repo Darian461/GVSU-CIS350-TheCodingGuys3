@@ -1,27 +1,60 @@
-import { ThemedView } from "@/components/themed-view";
-import {
-  AddIcon,
-  Box,
-  HStack,
-  Icon,
-  Pressable,
-  Text,
-  VStack,
-} from "@gluestack-ui/themed";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
+import { ThemedView } from "@/components/themed-view";
+import { Box, HStack, Text, VStack } from "@gluestack-ui/themed";
 import Svg from "react-native-svg";
 import { VictoryLabel, VictoryPie } from "victory-native";
+import { getToken } from "../index";
+import { useFocusEffect } from "@react-navigation/native";
 
-const today = new Date().toLocaleDateString(undefined, {
-  weekday: "long", // e.g., "Monday"
-  month: "long", // e.g., "October"
-  day: "numeric", // e.g., "27"
-});
-
+// for development
+const ip = "http://172.18.224.1:8000";
 export default function HomeScreen() {
+  const [totals, setTotals] = useState<any>(null);
+
+  async function loadTotals() {
+    try {
+      const token = await getToken();
+      console.log("Fetching with token:", token);
+
+      if (!token) {
+        console.log("No token found");
+        return;
+      }
+
+      const res = await fetch(`${ip}/food-log/today/totals`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Status:", res.status);
+      const text = await res.text();
+      console.log("Raw response:", text);
+
+      if (!res.ok) return;
+
+      const data = JSON.parse(text);
+      setTotals(data);
+    } catch (err) {
+      console.error("Fetch failed:", err);
+    }
+  }
+
+  // 🔥 This runs every time the screen becomes active again
+  useFocusEffect(
+    React.useCallback(() => {
+      loadTotals();
+    }, [])
+  );
+
+  if (!totals) {
+    return <Text>No totals...</Text>;
+  }
+
   const dailyGoal = 3500;
-  const consumed = 1500;
+  const consumed = totals.total_calories;
   const remaining = dailyGoal - consumed;
 
   const data = [
@@ -31,19 +64,29 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={{ backgroundColor: "#ffffffff" }}>
-      {/* Outer container for chart and boxes */}
       <ThemedView style={styles.container}>
         <VStack alignItems="center" space="lg">
-          {/* Date in middle */}
-          <Text style={styles.dateText}>{today}</Text>
+          <Text style={styles.dateText}>
+            {new Date().toLocaleDateString(undefined, {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+            })}
+          </Text>
 
-          {/* Row above the chart */}
           <HStack space="lg">
-            <StatBox title="Protein" value="120g" color="#ef4444" />
-            <StatBox title="Carbs" value="200g" color="#22c55e" />
+            <StatBox
+              title="Protein"
+              value={`${totals.total_protein}g`}
+              color="#ef4444"
+            />
+            <StatBox
+              title="Carbs"
+              value={`${totals.total_carbs}g`}
+              color="#22c55e"
+            />
           </HStack>
 
-          {/* Center pie chart */}
           <Box>
             <Svg width={300} height={300} viewBox="0 0 400 400">
               <VictoryPie
@@ -65,29 +108,25 @@ export default function HomeScreen() {
                 textAnchor="middle"
                 x={200}
                 y={180}
-                style={{
-                  fontSize: 28,
-                  fontWeight: "bold",
-                  fill: "#000000ff",
-                }}
+                style={{ fontSize: 28, fontWeight: "bold", fill: "#000000ff" }}
                 text={`${consumed} kcal`}
               />
               <VictoryLabel
                 textAnchor="middle"
                 x={200}
                 y={220}
-                style={{
-                  fontSize: 20,
-                  fill: "#000000cc",
-                }}
+                style={{ fontSize: 20, fill: "#000000cc" }}
                 text={`${remaining} left`}
               />
             </Svg>
           </Box>
 
-          {/* Row below the chart */}
           <HStack space="lg">
-            <StatBox title="Fats" value="60g" color="#facc15" />
+            <StatBox
+              title="Fats"
+              value={`${totals.total_fat}g`}
+              color="#facc15"
+            />
             <StatBox title="Water" value="100ml" color="#2d05f6ff" />
           </HStack>
         </VStack>
@@ -96,7 +135,6 @@ export default function HomeScreen() {
   );
 }
 
-/* A reusable stat box */
 const StatBox = ({
   title,
   value,
