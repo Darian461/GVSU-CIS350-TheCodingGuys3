@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
@@ -11,7 +11,7 @@ import {
   View,
   Image
 } from "react-native";
-import 'react-native-url-polyfill/auto';
+import "react-native-url-polyfill/auto";
 
 const API_BASE = "http://172.18.224.1:8000";
 
@@ -19,26 +19,26 @@ type AuthMode = "login" | "register";
 
 export const storeToken = async (token: string) => {
   try {
-    await AsyncStorage.setItem('authToken', token);
+    await AsyncStorage.setItem("authToken", token);
   } catch (error) {
-    console.error('Error storing token:', error);
+    console.error("Error storing token:", error);
   }
 };
 
 export const getToken = async () => {
   try {
-    return await AsyncStorage.getItem('authToken');
+    return await AsyncStorage.getItem("authToken");
   } catch (error) {
-    console.error('Error getting token:', error);
+    console.error("Error getting token:", error);
     return null;
   }
 };
 
 export const removeToken = async () => {
   try {
-    await AsyncStorage.removeItem('authToken');
+    await AsyncStorage.removeItem("authToken");
   } catch (error) {
-    console.error('Error removing token:', error);
+    console.error("Error removing token:", error);
   }
 };
 
@@ -67,9 +67,7 @@ const AuthScreen: React.FC = () => {
 
     try {
       const endpoint =
-        mode === "login"
-          ? `${API_BASE}/login`
-          : `${API_BASE}/register`;
+        mode === "login" ? `${API_BASE}/login` : `${API_BASE}/register`;
 
       const payload =
         mode === "login"
