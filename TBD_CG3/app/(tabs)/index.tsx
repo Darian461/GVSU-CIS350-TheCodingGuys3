@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
 import { ThemedView } from "@/components/themed-view";
 import { Box, HStack, Text, VStack } from "@gluestack-ui/themed";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useState } from "react";
+import { ScrollView, StyleSheet } from "react-native";
 import Svg from "react-native-svg";
 import { VictoryLabel, VictoryPie } from "victory-native";
 import { getToken } from "../index";
-import { useFocusEffect } from "@react-navigation/native";
 
 // for development
-const ip = "http://172.18.224.1:8000";
+const ip = "http://10.0.0.183:8000";
 export default function HomeScreen() {
   const [totals, setTotals] = useState<any>(null);
 
@@ -42,7 +42,7 @@ export default function HomeScreen() {
     }
   }
 
-  // 🔥 This runs every time the screen becomes active again
+  // This runs every time the screen becomes active again
   useFocusEffect(
     React.useCallback(() => {
       loadTotals();

@@ -5,16 +5,17 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import {
   AddIcon,
   Box,
-  CircleIcon,
+  EditIcon,
   HStack,
   Icon,
-  Pressable,
+  Image,
   SettingsIcon,
-  Text,
+  Text
 } from "@gluestack-ui/themed";
 import { Tabs, useRouter } from "expo-router";
+import { ChartSpline } from 'lucide-react-native';
 import React from "react";
-import { Platform, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 
 const Header = () => (
   <Box
@@ -29,26 +30,26 @@ const Header = () => (
       {/* Left side */}
       <HStack alignItems="center" space="md">
         <Box
-          bg="$backgroundLight200"
+          bg="$backgroundLight0"
           width={40}
           height={40}
           rounded="$full"
           justifyContent="center"
           alignItems="center"
         >
-          <Icon as={AddIcon} color="$textLight500" />
+          <Image
+            source={require("../../assets/images/macal_logo_only.png")}
+            style={styles.logo}
+            resizeMode="contain"
+            alt="macal logo"
+            />
+
         </Box>
         <Text fontSize="$lg" fontWeight="$bold" color="$textLight800">
           macal
         </Text>
       </HStack>
 
-      {/* Right side */}
-      <Pressable>
-        <Text fontSize="$md" color="$textLight700">
-          macro
-        </Text>
-      </Pressable>
     </HStack>
   </Box>
 );
@@ -93,7 +94,7 @@ export default function Layout() {
           options={{
             title: "Stats",
             tabBarIcon: ({ color }) => (
-              <Icon as={CircleIcon} size="xl" color={color} />
+              <Icon as={ChartSpline} size="xl" color={color} />
             ),
           }}
         />
@@ -135,7 +136,7 @@ export default function Layout() {
           options={{
             title: "History",
             tabBarIcon: ({ color }) => (
-              <Icon as={CircleIcon} size="xl" color={color} />
+              <Icon as={EditIcon} size="xl" color={color} />
             ),
           }}
         />
@@ -150,28 +151,15 @@ export default function Layout() {
             ),
           }}
         />
-
-        {/* Login
-        <Tabs.Screen
-          name="foodSearch"
-          options={{
-            title: 'Food Search',
-            tabBarIcon: ({ color }) => (
-              <IconSymbol size={28} name="fork.knife" color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="Login"
-          options={{
-            title: "Login",
-            tabBarIcon: ({ color }) => (
-              <IconSymbol size={26} name="person.fill" color={color} />
-            ),
-          }}
-        />
-        */}
       </Tabs>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  logo: {
+    width: 80,
+    height: 80,
+    marginBottom: 0,
+  }
+});
