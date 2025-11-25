@@ -22,7 +22,7 @@ import {
   Spinner,
   Text,
 } from "@gluestack-ui/themed";
-import { BadgePlus, Barcode } from "lucide-react-native";
+import { BadgePlus } from "lucide-react-native";
 import React from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
 import Animated, {
@@ -30,12 +30,11 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import BarcodeScreen from "../foodSearch/barcode";
 import CreateFoodScreen from "../foodSearch/createFood";
 import { getToken } from "../index";
 
 // for development
-const ip = 'http://172.18.224.1:8000';
+const ip = 'http://10.0.0.183:8000';
 
 async function fetchData(searchTerm: string) {
   try {
@@ -125,7 +124,6 @@ const getNutrientValue = (nutrients: any[], label: string): number => {
 
 const BUTTONS = [
   { key: "search", icon: SearchIcon },
-  { key: "barcode", icon: Barcode },
   { key: "create", icon: BadgePlus },
 ];
 

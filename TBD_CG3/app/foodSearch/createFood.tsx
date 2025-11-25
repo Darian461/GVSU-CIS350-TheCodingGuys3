@@ -23,7 +23,7 @@ import { Alert, KeyboardAvoidingView, Platform, ScrollView as RNScrollView } fro
 import { FoodFormErrors, NutrientField, Nutrients } from '../../interfaces';
 import { getToken } from '../index';
 
-const ip = 'http://172.18.224.1:8000';
+const ip = 'http://10.0.0.183:8000';
 
 async function addCustomFoodToLog(foodData: {
   food_name: string;
