@@ -57,8 +57,8 @@ An intuitive, modern, easy-to-use all-in-one fitness web application that includ
 ## Non-Functional Requirements
 <b>NR1</b>: All user login information shall be encrypted in the PostgreSQL database. <br>
 <b>NR2</b>: Passwords shall not be viewable at any point. <br>
-<b>NR3</b>: In the "Sign up" screen, when a user completes "Username", "Email", and "Password" fields, the complete account button shall become functional.
-<b>NR4</b>: In the "Sign up" screen, when a user enters a unique "Username" and "Email", with a password field, the complete account process shall become functional. 
+<b>NR3</b>: In the "Sign up" screen, when a user completes "Username", "Email", and "Password" fields, the complete account button shall become functional. <br>
+<b>NR4</b>: In the "Sign up" screen, when a user enters a unique "Username" and "Email", with a password field, the complete account process shall become functional. <br>
 <b>NR5</b>: Adding food entries shall dynamically change the pie chart displaying the main calories or macronutrient selected on the "Home", and "Stats" screen. <br>
 <b>NR6</b>: Removing food entries shall dynamically change the pie chart displaying the main calories or macronutrient selected on the "Home", and "Stats" screen. <br>
 <b>NR7</b>: The header shall remain present on all pages of the application. <br>
