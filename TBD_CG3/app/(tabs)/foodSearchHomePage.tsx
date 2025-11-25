@@ -35,7 +35,7 @@ import CreateFoodScreen from "../foodSearch/createFood";
 import { getToken } from "../index";
 
 // for development
-const ip = "http://35.38.194.181:8000";
+const ip = 'http://172.18.224.1:8000';
 
 async function fetchData(searchTerm: string) {
   try {

@@ -6,6 +6,8 @@ import uuid
 from .database import Base
 
 
+
+
 class WeightLog(Base):
     __tablename__ = "weight_log"
 
@@ -13,4 +15,6 @@ class WeightLog(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("Users.id"), nullable=False)
 
     weight = Column(Float, nullable=False)
+
+    # allow frontend to send date OR fallback to utcnow
     logged_at = Column(DateTime, default=datetime.utcnow)

@@ -8,7 +8,7 @@ import { getToken } from "../index";
 import { useFocusEffect } from "@react-navigation/native";
 
 // for development
-const ip = "http://35.38.194.181:8000";
+const ip = "http://172.18.224.1:8000";
 export default function HomeScreen() {
   const [totals, setTotals] = useState<any>(null);
 

@@ -16,7 +16,7 @@ def log_weight(
 ):
     log = WeightLog(
         id=uuid.uuid4(),
-        user_id=current_user["id"],   # <-- pulled from token
+        user_id=current_user["id"],
         weight=data.weight
     )
 
@@ -33,7 +33,7 @@ def get_weight_history(
 ):
     return (
         db.query(WeightLog)
-          .filter(WeightLog.user_id == current_user["id"])  # <-- token user
-          .order_by(WeightLog.logged_at.desc())
-          .all()
+        .filter(WeightLog.user_id == current_user["id"])
+        .order_by(WeightLog.logged_at.desc())
+        .all()
     )

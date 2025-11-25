@@ -59,3 +59,4 @@ def get_today_totals(db: Session = Depends(get_db), current_user = Depends(get_c
     }
 
     return totals
+
