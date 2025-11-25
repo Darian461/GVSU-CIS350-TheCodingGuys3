@@ -1,18 +1,32 @@
-import React, { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import {
-  StyleSheet,
-  View,
-  Text,
+  ActivityIndicator,
   Dimensions,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
 import {
+  VictoryAxis,
   VictoryChart,
   VictoryLine,
-  VictoryAxis,
-  VictoryTheme,
   VictoryScatter,
+  VictoryTheme,
 } from "victory-native";
+
+const API_BASE = "http://10.0.0.183:8000";
+
+const getToken = async () => {
+  try {
+    return await AsyncStorage.getItem("authToken");
+  } catch (error) {
+    console.error("Error getting token:", error);
+    return null;
+  }
+};
 
 const weightData = [
   { x: new Date(2025, 10, 1), y: 180 },
@@ -26,27 +40,6 @@ const weightData = [
   { x: new Date(2025, 10, 20), y: 169 },
   { x: new Date(2025, 10, 22), y: 168 },
   { x: new Date(2025, 10, 25), y: 167 },
-  { x: new Date(2025, 10, 28), y: 165 },
-  { x: new Date(2025, 10, 30), y: 164 },
-];
-
-const calorieData = [
-  { x: new Date(2025, 9, 30), y: 2100 },
-  { x: new Date(2025, 10, 1), y: 1950 },
-  { x: new Date(2025, 10, 2), y: 2200 },
-  { x: new Date(2025, 10, 3), y: 2000 },
-  { x: new Date(2025, 10, 4), y: 1850 },
-  { x: new Date(2025, 10, 5), y: 2500 },
-  { x: new Date(2025, 10, 6), y: 2300 },
-  { x: new Date(2025, 10, 7), y: 1900 },
-  { x: new Date(2025, 10, 8), y: 2100 },
-  { x: new Date(2025, 10, 9), y: 2250 },
-  { x: new Date(2025, 10, 10), y: 1800 },
-  { x: new Date(2025, 10, 11), y: 2400 },
-  { x: new Date(2025, 10, 12), y: 2000 },
-  { x: new Date(2025, 10, 13), y: 2150 },
-  { x: new Date(2025, 10, 14), y: 2050 },
-  { x: new Date(2025, 10, 15), y: 1900 },
 ];
 
 const HorizontalLine = (yValue: number, color: string) => (
@@ -65,20 +58,110 @@ const HorizontalLine = (yValue: number, color: string) => (
   />
 );
 
+interface CalorieDataPoint {
+  x: Date;
+  y: number;
+}
+
+interface DailyTotal {
+  date: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  items_count: number;
+}
+
 export default function StatsPage() {
   const [selectedView, setSelectedView] = useState<"weight" | "calories">(
     "weight"
   );
+  const [calorieData, setCalorieData] = useState<CalorieDataPoint[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (selectedView === "calories") {
+        fetchCalorieHistory();
+      }
+    }, [selectedView])
+  );
+
+  useEffect(() => {
+    if (selectedView === "calories") {
+      fetchCalorieHistory();
+    }
+  }, [selectedView]);
+
+  const fetchCalorieHistory = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const token = await getToken();
+      if (!token) {
+        setError("Not authenticated. Please log in.");
+        setLoading(false);
+        return;
+      }
+
+      // Get current month's start and end dates
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      
+      // Format dates as YYYY-MM-DD
+      const formatDate = (date: Date) => date.toISOString().split('T')[0];
+      
+      const url = `${API_BASE}/food-log/history/daily-totals?start_date=${formatDate(startOfMonth)}&end_date=${formatDate(endOfMonth)}`;
+      
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.detail || "Failed to fetch calorie history");
+      }
+
+      const dailyTotals: DailyTotal[] = await response.json();
+      
+      // Convert to chart data format
+      const chartData = dailyTotals.map((day) => ({
+        x: new Date(day.date),
+        y: Math.round(day.calories),
+      }));
+
+      setCalorieData(chartData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("Error fetching calorie history:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const firstY = weightData[0]?.y;
   const currentY = weightData[weightData.length - 1]?.y;
   const goalY = 170;
   const calGoal = 2000;
-  const avgCal =
-    calorieData.reduce((sum, entry) => sum + entry.y, 0) / calorieData.length;
+  
+  // Calculate statistics from calorie data
+  const avgCal = calorieData.length > 0
+    ? calorieData.reduce((sum, entry) => sum + entry.y, 0) / calorieData.length
+    : 0;
   const avgCalRounded = Math.round(avgCal);
-  const minCal = Math.min(...calorieData.map((entry) => entry.y));
-  const maxCal = Math.max(...calorieData.map((entry) => entry.y));
+  const minCal = calorieData.length > 0 
+    ? Math.min(...calorieData.map((entry) => entry.y))
+    : 0;
+  const maxCal = calorieData.length > 0
+    ? Math.max(...calorieData.map((entry) => entry.y))
+    : 0;
 
   return (
     <View style={styles.chartContainer}>
@@ -88,6 +171,7 @@ export default function StatsPage() {
           <Text
             style={{
               fontWeight: selectedView === "weight" ? "bold" : "normal",
+              fontSize: 16,
             }}
           >
             Weight
@@ -97,6 +181,7 @@ export default function StatsPage() {
           <Text
             style={{
               fontWeight: selectedView === "calories" ? "bold" : "normal",
+              fontSize: 16,
             }}
           >
             Calories
@@ -125,7 +210,7 @@ export default function StatsPage() {
                 dependentAxis
                 label="lbs"
                 style={{
-                  axisLabel: { padding: 35, fontSize: 12 },
+                  axisLabel: { padding: 35, fontSize: 11 },
                   tickLabels: { fontSize: 10, padding: 5 },
                 }}
               />
@@ -173,38 +258,49 @@ export default function StatsPage() {
         <>
           <View style={styles.chartBox}>
             <Text style={styles.chartTitle}>Calories History</Text>
-            <VictoryChart
-              width={Dimensions.get("window").width - 20}
-              theme={VictoryTheme.material}
-              scale={{ x: "time" }}
-              padding={{ top: 20, bottom: 50, left: 50, right: 60 }}
-            >
-              <VictoryAxis
-                tickFormat={(t) => `${t.getMonth() + 1}/${t.getDate()}`}
-                style={{
-                  tickLabels: { fontSize: 10, angle: -45, padding: 15 },
-                }}
-              />
-              <VictoryAxis
-                dependentAxis
-                label="Calories"
-                style={{
-                  axisLabel: { padding: 35, fontSize: 12 },
-                  tickLabels: { fontSize: 10, padding: 5 },
-                }}
-              />
-              <VictoryScatter
-                data={calorieData}
-                size={5}
-                style={{
-                  data: {
-                    fill: "#FF9500",
-                    stroke: "#FF9500",
-                    strokeWidth: 1.5,
-                  },
-                }}
-              />
-            </VictoryChart>
+            
+            {loading ? (
+              <ActivityIndicator size="large" color="#007AFF" style={{ marginVertical: 50 }} />
+            ) : error ? (
+              <View style={{ paddingVertical: 30 }}>
+                <Text style={styles.errorText}>{error}</Text>
+              </View>
+            ) : calorieData.length === 0 ? (
+              <Text style={styles.noDataText}>No calorie data available for this month</Text>
+            ) : (
+              <VictoryChart
+                width={Dimensions.get("window").width - 20}
+                theme={VictoryTheme.material}
+                scale={{ x: "time" }}
+                padding={{ top: 20, bottom: 50, left: 50, right: 60 }}
+              >
+                <VictoryAxis
+                  tickFormat={(t) => `${t.getMonth() + 1}/${t.getDate()}`}
+                  style={{
+                    tickLabels: { fontSize: 10, angle: -45, padding: 15 },
+                  }}
+                />
+                <VictoryAxis
+                  dependentAxis
+                  label="Calories"
+                  style={{
+                    axisLabel: { padding: 40, fontSize: 11 },
+                    tickLabels: { fontSize: 10, padding: 5 },
+                  }}
+                />
+                <VictoryScatter
+                  data={calorieData}
+                  size={5}
+                  style={{
+                    data: {
+                      fill: "#FF9500",
+                      stroke: "#FF9500",
+                      strokeWidth: 1.5,
+                    },
+                  }}
+                />
+              </VictoryChart>
+            )}
           </View>
 
           <View style={styles.displayBox}>
@@ -216,18 +312,24 @@ export default function StatsPage() {
               </View>
               <View style={styles.labelCell}>
                 <Text style={styles.labelTitle}>Average</Text>
-                <Text style={styles.labelValue}>{avgCalRounded}</Text>
+                <Text style={styles.labelValue}>
+                  {calorieData.length > 0 ? avgCalRounded : "-"}
+                </Text>
                 <Text style={styles.labelUnits}>calories</Text>
               </View>
             </View>
             <View style={styles.labelRow}>
               <View style={styles.labelCell}>
                 <Text style={styles.labelTitle}>Lowest Day</Text>
-                <Text style={styles.labelValue}>{minCal}</Text>
+                <Text style={styles.labelValue}>
+                  {calorieData.length > 0 ? minCal : "-"}
+                </Text>
               </View>
               <View style={styles.labelCell}>
                 <Text style={styles.labelTitle}>Highest Day</Text>
-                <Text style={styles.labelValue}>{maxCal}</Text>
+                <Text style={styles.labelValue}>
+                  {calorieData.length > 0 ? maxCal : "-"}
+                </Text>
               </View>
             </View>
           </View>
@@ -259,7 +361,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   displayBox: {
-    marginTop: 20,
+    marginTop: 15,
     width: "100%",
     maxWidth: Dimensions.get("window").width - 20,
     padding: 15,
@@ -316,7 +418,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     width: "100%",
-    marginBottom: 8,
+    marginBottom: 12,
     borderRadius: 4,
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+  },
+  noDataText: {
+    color: "#555",
+    textAlign: "center",
+    marginVertical: 20,
   },
 });
