@@ -21,6 +21,11 @@ import {
   SearchIcon,
   Spinner,
   Text,
+  Toast,
+  ToastDescription,
+  ToastTitle,
+  VStack,
+  useToast,
 } from "@gluestack-ui/themed";
 import { BadgePlus } from "lucide-react-native";
 import React from "react";
@@ -248,6 +253,7 @@ export default function FoodSearch() {
   const [selectedFood, setSelectedFood] = React.useState<any>(null);
   const [foodDetails, setFoodDetails] = React.useState<any>(null);
   const [loadingDetails, setLoadingDetails] = React.useState(false);
+  const toast = useToast();
 
   React.useEffect(() => {
     if (!searchText.trim()) {
@@ -390,7 +396,6 @@ export default function FoodSearch() {
           </ThemedView>
         )}
 
-        {activeButton === "barcode" && <BarcodeScreen />}
         {activeButton === "create" && <CreateFoodScreen />}
       </ScrollView>
 
@@ -562,11 +567,27 @@ export default function FoodSearch() {
 
                   console.log("Sending complete food data:", foodLogData);
 
-                  await addFoodToLog(foodLogData);
+                      await addFoodToLog(foodLogData);
 
-                  setShowModal(false);
-                  setSelectedFood(null);
-                  setFoodDetails(null);
+                      toast.show({
+                        placement: "bottom",
+                        render: ({ id }) => {
+                          return (
+                            <Toast nativeID={id} action="success" variant="solid">
+                              <VStack space="xs">
+                                <ToastTitle>Success!</ToastTitle>
+                                <ToastDescription>
+                                  {selectedFood?.description || 'Food'} has been added to your food log
+                                </ToastDescription>
+                              </VStack>
+                            </Toast>
+                          );
+                        },
+                      });
+
+                      setShowModal(false);
+                      setSelectedFood(null);
+                      setFoodDetails(null);
                 } catch (error: any) {
                   alert(error.message || "Failed to add food to log");
                 }
@@ -578,5 +599,4 @@ export default function FoodSearch() {
         </ModalContent>
       </Modal>
     </>
-  );
-}
+  )};
