@@ -60,15 +60,17 @@ An intuitive, modern, easy-to-use all-in-one fitness web application that includ
 <b>NR3</b>: In the "Sign up" screen, when a user completes "Username", "Email", and "Password" fields, the complete account button shall become functional. <br>
 <b>NR4</b>: In the "Sign up" screen, when a user enters a unique "Username" and "Email", with a password field, the complete account process shall become functional. <br>
 <b>NR5</b>: In the "Log in" screen, when a user completes the "Username or Email" and "Password" input fields, the login button shall become functional. <br>
-<b>NR6</b>: Adding food entries shall dynamically change the pie chart displaying the main calories or macronutrient selected on the "Home", and "Stats" screen. <br>
-<b>NR7</b>: Removing food entries shall dynamically change the pie chart displaying the main calories or macronutrient selected on the "Home", and "Stats" screen. <br>
-<b>NR8</b>: The header shall remain present on all pages of the application. <br>
-<b>NR9</b>: All macro/micronutrients shall be rounded to the nearest hundredths place when being displayed in the UI. <br>
-<b>NR10</b>: All measurements from the USDA Food Database returned with the unit, kJ (Kilojoules) shall be converted to calories. <br>
-<b>NR11</b>: Calories, Carbs, Protein, and Fat shall be prioritized and sorted for each food entry. <br>
-<b>NR12</b>: Searching for a food entry shall happen dynamically, allowing for incremental searching every 0.5 seconds. <br>
-<b>NR13</b>: In the "Create New Food" screen, the "Food Name" entry shall be a required field. <br>
-<b>NR14</b>: In the "Create New Food" screen, all nutrition fact entries shall be error validated for integers greater than zero. <br>
+<b>NR6</b>: Searching for a food shall call upon the USDA Food Database API and return the resulting food entries. <br>
+<b>NR7</b>: Clicking on a specific food entry shall call upon the USDA Food Database API and return the resulting nutrition facts of said food entry. <br>
+<b>NR8</b>: Adding food entries shall dynamically change the pie chart displaying the main calories or macronutrient selected on the "Home", and "Stats" screen. <br>
+<b>NR9</b>: Removing food entries shall dynamically change the pie chart displaying the main calories or macronutrient selected on the "Home", and "Stats" screen. <br>
+<b>NR10</b>: The header shall remain present on all pages of the application. <br>
+<b>NR11</b>: All macro/micronutrients shall be rounded to the nearest hundredths place when being displayed in the UI. <br>
+<b>NR12</b>: All measurements from the USDA Food Database returned with the unit, kJ (Kilojoules) shall be converted to calories. <br>
+<b>NR13</b>: Calories, Carbs, Protein, and Fat shall be prioritized and sorted for each food entry. <br>
+<b>NR14</b>: Searching for a food entry shall happen dynamically, allowing for incremental searching every 0.5 seconds. <br>
+<b>NR15</b>: In the "Create New Food" screen, the "Food Name" entry shall be a required field. <br>
+<b>NR16</b>: In the "Create New Food" screen, all nutrition fact entries shall be error validated for integers greater than zero. <br>
 
 # Product Features
 <ol>
