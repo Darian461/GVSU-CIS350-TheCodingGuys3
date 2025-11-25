@@ -75,7 +75,7 @@ An intuitive, modern, easy-to-use all-in-one fitness web application that includ
     <li>The ability to login and create new accounts with their own account history.</li>
 </ol>
 
-# Anticipated Technologies
+# Technologies
 <ol>
     <li>React Native</li>
         <ol>
