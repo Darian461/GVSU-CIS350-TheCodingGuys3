@@ -8,7 +8,7 @@ import { VictoryLabel, VictoryPie } from "victory-native";
 import { getToken } from "../index";
 
 // for development
-const ip = "http://10.0.0.183:8000";
+const ip = "http://192.168.86.54:8000";
 export default function HomeScreen() {
   const [totals, setTotals] = useState<any>(null);
 
@@ -42,10 +42,7 @@ export default function HomeScreen() {
     }
   }
 
-<<<<<<< HEAD
-=======
   // This runs every time the screen becomes active again
->>>>>>> main
   useFocusEffect(
     React.useCallback(() => {
       loadTotals();
@@ -76,6 +73,19 @@ export default function HomeScreen() {
               day: "numeric",
             })}
           </Text>
+
+          <HStack space="lg">
+            <StatBox
+              title="Protein"
+              value={`${Math.round(totals.total_protein)}g`}
+              color="#ef4444"
+            />
+            <StatBox
+              title="Carbs"
+              value={`${Math.round(totals.total_carbs)}g`}
+              color="#22c55e"
+            />
+          </HStack>
 
           <Box>
             <Svg width={300} height={300} viewBox="0 0 400 400">
@@ -110,19 +120,6 @@ export default function HomeScreen() {
               />
             </Svg>
           </Box>
-
-          <HStack space="lg">
-            <StatBox
-              title="Protein"
-              value={`${Math.round(totals.total_protein)}g`}
-              color="#ef4444"
-            />
-            <StatBox
-              title="Carbs"
-              value={`${Math.round(totals.total_carbs)}g`}
-              color="#22c55e"
-            />
-          </HStack>
 
           <HStack space="lg">
             <StatBox

@@ -10,10 +10,10 @@ import {
   Icon,
   Image,
   SettingsIcon,
-  Text
+  Text,
 } from "@gluestack-ui/themed";
 import { Tabs, useRouter } from "expo-router";
-import { ChartSpline } from 'lucide-react-native';
+import { ChartSpline } from "lucide-react-native";
 import React from "react";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -42,14 +42,12 @@ const Header = () => (
             style={styles.logo}
             resizeMode="contain"
             alt="macal logo"
-            />
-
+          />
         </Box>
         <Text fontSize="$lg" fontWeight="$bold" color="$textLight800">
           macal
         </Text>
       </HStack>
-
     </HStack>
   </Box>
 );
@@ -161,5 +159,5 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     marginBottom: 0,
-  }
+  },
 });

@@ -1,8 +1,56 @@
-import React from 'react';
+import React, { useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { ScrollView, StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Box, VStack, HStack } from '@gluestack-ui/themed';
 import { VictoryPie } from 'victory-native';
 import Svg from 'react-native-svg';
+import { getToken } from "../index";
+
+
+const ip = "http://192.168.86.54:8000";
+export default function HomeScreen() {
+  const [totals, setTotals] = useState<any>(null);
+
+  async function loadTotals() {
+    try {
+      const token = await getToken();
+      console.log("Fetching with token:", token);
+
+      if (!token) {
+        console.log("No token found");
+        return;
+      }
+
+      const res = await fetch(`${ip}/food-log/today/totals`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Status:", res.status);
+      const text = await res.text();
+      console.log("Raw response:", text);
+
+      if (!res.ok) return;
+
+      const data = JSON.parse(text);
+      setTotals(data);
+    } catch (err) {
+      console.error("Fetch failed:", err);
+    }
+  }
+
+  // This runs every time the screen becomes active again
+  useFocusEffect(
+    React.useCallback(() => {
+      loadTotals();
+    }, [])
+  );
+
+  if (!totals) {
+    return <Text>No totals...</Text>;
+  }
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -113,3 +161,4 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 });
+

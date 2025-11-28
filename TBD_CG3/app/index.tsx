@@ -9,20 +9,11 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-<<<<<<< HEAD
   View,
-  Image,
 } from "react-native";
 import "react-native-url-polyfill/auto";
 
 const API_BASE = "http://192.168.86.54:8000";
-=======
-  View
-} from "react-native";
-import "react-native-url-polyfill/auto";
-
-const API_BASE = "http://10.0.0.183:8000";
->>>>>>> main
 
 type AuthMode = "login" | "register";
 
