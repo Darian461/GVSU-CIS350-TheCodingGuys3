@@ -4,7 +4,7 @@
     "slug": "TBD_CG3",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/macal_logo.png",
     "scheme": "tbdcg3",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
