@@ -12,6 +12,7 @@ import {
   useColorMode,
 } from "@gluestack-ui/themed";
 import { Moon, Sun, User, Settings, LogOut } from "lucide-react-native";
+import { router } from "expo-router";
 
 export default function SettingsScreen() {
   const { colorMode, setColorMode } = useColorMode();
@@ -73,7 +74,7 @@ export default function SettingsScreen() {
 
       {/* Menu Options */}
       <VStack space="md">
-        <Pressable>
+        <Pressable onPress={() => router.push("../index")}>
           <HStack
             h={48}
             alignItems="center"

@@ -42,7 +42,6 @@ export default function HomeScreen() {
     }
   }
 
-  // 🔥 This runs every time the screen becomes active again
   useFocusEffect(
     React.useCallback(() => {
       loadTotals();
@@ -73,19 +72,6 @@ export default function HomeScreen() {
               day: "numeric",
             })}
           </Text>
-
-          <HStack space="lg">
-            <StatBox
-              title="Protein"
-              value={`${totals.total_protein}g`}
-              color="#ef4444"
-            />
-            <StatBox
-              title="Carbs"
-              value={`${totals.total_carbs}g`}
-              color="#22c55e"
-            />
-          </HStack>
 
           <Box>
             <Svg width={300} height={300} viewBox="0 0 400 400">
@@ -123,8 +109,21 @@ export default function HomeScreen() {
 
           <HStack space="lg">
             <StatBox
+              title="Protein"
+              value={`${Math.round(totals.total_protein)}g`}
+              color="#ef4444"
+            />
+            <StatBox
+              title="Carbs"
+              value={`${Math.round(totals.total_carbs)}g`}
+              color="#22c55e"
+            />
+          </HStack>
+
+          <HStack space="lg">
+            <StatBox
               title="Fats"
-              value={`${totals.total_fat}g`}
+              value={`${Math.round(totals.total_fat)}g`}
               color="#facc15"
             />
             <StatBox title="Water" value="100ml" color="#2d05f6ff" />

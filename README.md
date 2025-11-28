@@ -86,3 +86,169 @@ We plan to have processes that encompass the majority of what is used commonly i
             <li>Project management tool.</li>
         </ol>
 </ol>
+
+```
+GVSU-CIS350-TheCodingGuys3
+├─ .idea
+│  ├─ GVSU-CIS350-TheCodingGuys3.iml
+│  ├─ modules.xml
+│  ├─ vcs.xml
+│  └─ workspace.xml
+├─ artifacts
+│  ├─ figma-prototype.md
+│  ├─ Low-fidelity Prototype 1.jpg
+│  ├─ Low-fidelity Prototype 2.jpg
+│  ├─ Low-fidelity Prototype 3.jpg
+│  ├─ README.md
+│  └─ use_case_diagram
+│     ├─ CIS350_Use_Case_Diagram.pdf
+│     └─ use_case_description.md
+├─ cis350.zip
+├─ docs
+│  ├─ Burn_Down_for_TheCodingGuys_1.png
+│  ├─ hw4_tasks.md
+│  ├─ proposal-template.md
+│  ├─ README.md
+│  ├─ software_requirements_specification.md
+│  └─ The Coding Guys Presentation.pdf
+├─ LICENSE
+├─ meetings
+│  ├─ GVSU-CIS350-TheCodingGuys3-2025-09-17
+│  ├─ GVSU-CIS350-TheCodingGuys3-2025-09-23
+│  ├─ GVSU-CIS350-TheCodingGuys3-2025-09-25
+│  ├─ GVSU-CIS350-TheCodingGuys3-2025-10-14
+│  ├─ GVSU-CIS350-TheCodingGuys3-2025-10-19
+│  ├─ GVSU-CIS350-TheCodingGuys3-2025-10-23
+│  ├─ GVSU-CIS350-TheCodingGuys3-2025-11-05
+│  ├─ GVSU-CIS350-TheCodingGuys3-2025-11-06
+│  ├─ GVSU-CIS350-TheCodingGuys3-2025-11-10
+│  ├─ GVSU-CIS350-TheCodingGuys3-2025-11-18
+│  ├─ GVSU-CIS350-TheCodingGuys3-2025-11-23
+│  ├─ GVSU-CIS350-TheCodingGuys3-2025-11-25_1
+│  ├─ GVSU-CIS350-TheCodingGuys3-2025-11-25_2
+│  └─ README.md
+├─ package-lock.json
+├─ package.json
+├─ README.md
+├─ src
+│  └─ README.md
+├─ TBD_CG3
+│  ├─ .dockerignore
+│  ├─ .idea
+│  │  ├─ caches
+│  │  │  └─ deviceStreaming.xml
+│  │  ├─ deviceManager.xml
+│  │  ├─ modules.xml
+│  │  ├─ TBD_CG3.iml
+│  │  └─ vcs.xml
+│  ├─ .npmrc
+│  ├─ app
+│  │  ├─ (tabs)
+│  │  │  ├─ foodSearchHomePage.tsx
+│  │  │  ├─ history.tsx
+│  │  │  ├─ index.tsx
+│  │  │  ├─ setting.tsx
+│  │  │  ├─ stats.tsx
+│  │  │  └─ _layout.tsx
+│  │  ├─ foodSearch
+│  │  │  ├─ barcode.tsx
+│  │  │  ├─ createFood.tsx
+│  │  │  └─ _layout.tsx
+│  │  ├─ index.tsx
+│  │  ├─ modal.tsx
+│  │  └─ _layout.tsx
+│  ├─ app.json
+│  ├─ assets
+│  │  └─ images
+│  │     ├─ favicon.png
+│  │     ├─ icon.png
+│  │     ├─ macal_logo.png
+│  │     ├─ partial-react-logo.png
+│  │     ├─ react-logo.png
+│  │     ├─ react-logo@2x.png
+│  │     ├─ react-logo@3x.png
+│  │     └─ splash-icon.png
+│  ├─ babel.config.js
+│  ├─ backend
+│  │  ├─ .dockerignore
+│  │  ├─ auth.py
+│  │  ├─ database.py
+│  │  ├─ Dockerfile
+│  │  ├─ food_api.py
+│  │  ├─ food_log_m.py
+│  │  ├─ food_log_r.py
+│  │  ├─ food_log_s.py
+│  │  ├─ insert_test.py
+│  │  ├─ main.py
+│  │  ├─ models.py
+│  │  ├─ requirements.txt
+│  │  ├─ schemas.py
+│  │  ├─ services.py
+│  │  ├─ settings.py
+│  │  ├─ test_db_connection.py
+│  │  ├─ weight_log_m.py
+│  │  ├─ weight_log_r.py
+│  │  ├─ weight_log_s.py
+│  │  └─ __init__.py
+│  ├─ components
+│  │  ├─ external-link.tsx
+│  │  ├─ haptic-tab.tsx
+│  │  ├─ hello-wave.tsx
+│  │  ├─ parallax-scroll-view.tsx
+│  │  ├─ themed-text.tsx
+│  │  ├─ themed-view.tsx
+│  │  └─ ui
+│  │     ├─ button
+│  │     │  └─ index.tsx
+│  │     ├─ collapsible.tsx
+│  │     ├─ form-control
+│  │     │  └─ index.tsx
+│  │     ├─ gluestack-ui-provider
+│  │     │  ├─ config.ts
+│  │     │  ├─ index.next15.tsx
+│  │     │  ├─ index.tsx
+│  │     │  ├─ index.web.tsx
+│  │     │  └─ script.ts
+│  │     ├─ heading
+│  │     │  ├─ index.tsx
+│  │     │  ├─ index.web.tsx
+│  │     │  └─ styles.tsx
+│  │     ├─ icon-symbol.ios.tsx
+│  │     ├─ icon-symbol.tsx
+│  │     ├─ modal
+│  │     │  └─ index.tsx
+│  │     ├─ pressable
+│  │     │  └─ index.tsx
+│  │     └─ table
+│  │        ├─ index.tsx
+│  │        ├─ index.web.tsx
+│  │        └─ styles.tsx
+│  ├─ constants
+│  │  └─ theme.ts
+│  ├─ docker-compose.yml
+│  ├─ Dockerfile
+│  ├─ eslint.config.js
+│  ├─ global.css
+│  ├─ hooks
+│  │  ├─ use-color-scheme.ts
+│  │  ├─ use-color-scheme.web.ts
+│  │  └─ use-theme-color.ts
+│  ├─ interfaces
+│  │  ├─ foods.ts
+│  │  └─ index.ts
+│  ├─ metro.config.js
+│  ├─ nativewind-env.d.ts
+│  ├─ package-lock.json
+│  ├─ package.json
+│  ├─ README.md
+│  ├─ scripts
+│  │  └─ reset-project.js
+│  ├─ tailwind.config.js
+│  └─ tsconfig.json
+├─ tests
+│  └─ README.md
+├─ tsconfig.json
+└─ website
+   └─ README.md
+
+```
