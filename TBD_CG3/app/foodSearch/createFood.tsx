@@ -26,59 +26,7 @@ import {
   ScrollView as RNScrollView,
 } from "react-native";
 import { FoodFormErrors, NutrientField, Nutrients } from "../../interfaces";
-import { getToken } from "../login";
-
-const ip = "http://192.168.86.54:8000";
-
-async function addCustomFoodToLog(foodData: {
-  food_name: string;
-  calories: number;
-  fat: number;
-  trans_fat?: number;
-  saturated_fat?: number;
-  carbs: number;
-  fiber?: number;
-  sugar?: number;
-  added_sugars?: number;
-  protein: number;
-  cholesterol?: number;
-  sodium?: number;
-  vitamin_a?: number;
-  vitamin_c?: number;
-  calcium?: number;
-  iron?: number;
-  potassium?: number;
-  caffeine?: number;
-  quantity?: number;
-}) {
-  try {
-    const token = await getToken();
-
-    if (!token) {
-      throw new Error("No authentication token found. Please log in again.");
-    }
-
-    const response = await fetch(`${ip}/food-log/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(foodData),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || "Failed to add food to log");
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error adding custom food to log:", error);
-    throw error;
-  }
-}
+import { addCustomFoodToLog } from "../services/foodService";
 
 const CreateFoodScreen: React.FC = () => {
   const [foodName, setFoodName] = useState<string>("");

@@ -1,24 +1,29 @@
+import { API_BASE_URL } from "@/app/config/apiConfig";
 import { ThemedView } from "@/components/themed-view";
-import { Box, HStack, Text, VStack } from "@gluestack-ui/themed";
+import { Box, HStack, Spinner, Text, VStack } from "@gluestack-ui/themed";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import Svg from "react-native-svg";
 import { VictoryLabel, VictoryPie } from "victory-native";
-import { getToken } from "../login";
+import { getToken } from "../services/tokenService";
 
 // for development
-const ip = "http://192.168.86.54:8000";
+const ip = API_BASE_URL;
 export default function HomeScreen() {
   const [totals, setTotals] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   async function loadTotals() {
+    setLoading(true);
     try {
       const token = await getToken();
       console.log("Fetching with token:", token);
 
       if (!token) {
         console.log("No token found");
+        setTotals(null);
+        setLoading(false);
         return;
       }
 
@@ -33,12 +38,20 @@ export default function HomeScreen() {
       const text = await res.text();
       console.log("Raw response:", text);
 
-      if (!res.ok) return;
+      if (!res.ok) {
+        setTotals(null);
+        setLoading(false);
+        return;
+      }
 
       const data = JSON.parse(text);
+
       setTotals(data);
     } catch (err) {
       console.error("Fetch failed:", err);
+      setTotals(null);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -48,6 +61,16 @@ export default function HomeScreen() {
       loadTotals();
     }, [])
   );
+
+  if (loading) {
+    return (
+      <ThemedView style={[styles.container, { justifyContent: "center" }]}>
+        <Box p="$4" alignItems="center">
+          <Spinner size="large" />
+        </Box>
+      </ThemedView>
+    );
+  }
 
   if (!totals) {
     return <Text>No totals...</Text>;
