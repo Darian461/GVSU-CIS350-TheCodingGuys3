@@ -1,8 +1,9 @@
+import { API_BASE_URL } from "@/app/config/apiConfig";
 import { DailyTotal } from "@/interfaces";
 import { getToken } from "./tokenService";
 
 // CALORIE TAB
-const API_URL = 'http://10.0.0.69:8000';
+const API_URL = API_BASE_URL;
 
 export const fetchCalorieHistory = async (startDate: string, endDate: string): Promise<DailyTotal[]> => {
   try {

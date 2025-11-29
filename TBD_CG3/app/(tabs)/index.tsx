@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/app/config/apiConfig";
 import { ThemedView } from "@/components/themed-view";
 import { Box, HStack, Spinner, Text, VStack } from "@gluestack-ui/themed";
 import { useFocusEffect } from "@react-navigation/native";
@@ -8,7 +9,7 @@ import { VictoryLabel, VictoryPie } from "victory-native";
 import { getToken } from "../services/tokenService";
 
 // for development
-const ip = "http://10.0.0.69:8000";
+const ip = API_BASE_URL;
 export default function HomeScreen() {
   const [totals, setTotals] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
