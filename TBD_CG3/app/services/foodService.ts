@@ -1,6 +1,7 @@
+import { API_BASE_URL } from "@/app/config/apiConfig";
 import { getToken } from "./tokenService";
 
-const API_URL = 'http://10.0.0.69:8000';
+const API_URL = API_BASE_URL;
 
 export const fetchFood = async (searchQuery: string) => {
   try {

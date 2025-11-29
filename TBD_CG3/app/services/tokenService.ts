@@ -1,6 +1,7 @@
+import { API_BASE_URL } from "@/app/config/apiConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_BASE = "http://10.0.0.69:8000";
+const API_BASE = API_BASE_URL;
 
 export const storeToken = async (token: string) => {
   try {
