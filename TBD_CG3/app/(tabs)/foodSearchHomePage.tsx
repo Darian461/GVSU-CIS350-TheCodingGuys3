@@ -36,82 +36,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import CreateFoodScreen from "../foodSearch/createFood";
-import { getToken } from "../index";
-
-// for development
-const ip = 'http://10.0.0.183:8000';
-
-async function fetchData(searchTerm: string) {
-  try {
-    const response = await fetch(`${ip}/search-food/?query=${searchTerm}`);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    // console.error('Error fetching data: ', error);
-    return [];
-  }
-}
-
-async function fetchFoodDetails(fdcId: number) {
-  try {
-    const response = await fetch(`${ip}/food-details/${fdcId}`);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching food details:", error);
-    return null;
-  }
-}
-
-async function addFoodToLog(foodData: {
-  food_name: string;
-  calories: number;
-  fat: number;
-  trans_fat?: number;
-  saturated_fat?: number;
-  carbs: number;
-  fiber?: number;
-  sugar?: number;
-  added_sugars?: number;
-  protein: number;
-  cholesterol?: number;
-  sodium?: number;
-  vitamin_a?: number;
-  vitamin_c?: number;
-  calcium?: number;
-  iron?: number;
-  potassium?: number;
-  caffeine?: number;
-  quantity?: number;
-}) {
-  try {
-    const token = await getToken();
-
-    if (!token) {
-      throw new Error("No authentication token found. Please log in again.");
-    }
-
-    const response = await fetch(`${ip}/food-log/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(foodData),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || "Failed to add food to log");
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error adding food to log:", error);
-    throw error;
-  }
-}
+import { addFoodToLog, fetchFood, fetchFoodDetails } from "../services/foodService";
 
 const getNutrientValue = (nutrients: any[], label: string): number => {
   const nutrient = nutrients?.find((n) => n.label === label);
@@ -263,7 +188,7 @@ export default function FoodSearch() {
 
     setLoading(true);
     const timer = setTimeout(async () => {
-      const data = await fetchData(searchText);
+      const data = await fetchFood(searchText);
       setSearchResults(data);
       setLoading(false);
     }, 500);
