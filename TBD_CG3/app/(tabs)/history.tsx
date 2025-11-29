@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
@@ -16,17 +15,7 @@ import {
   VictoryScatter,
   VictoryTheme,
 } from "victory-native";
-
-const API_BASE = "http://10.0.0.183:8000";
-
-const getToken = async () => {
-  try {
-    return await AsyncStorage.getItem("authToken");
-  } catch (error) {
-    console.error("Error getting token:", error);
-    return null;
-  }
-};
+import { fetchCalorieHistory } from "../services/historyService";
 
 const weightData = [
   { x: new Date(2025, 10, 1), y: 180 },
@@ -63,15 +52,6 @@ interface CalorieDataPoint {
   y: number;
 }
 
-interface DailyTotal {
-  date: string;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  items_count: number;
-}
-
 export default function StatsPage() {
   const [selectedView, setSelectedView] = useState<"weight" | "calories">(
     "weight"
@@ -83,29 +63,22 @@ export default function StatsPage() {
   useFocusEffect(
     React.useCallback(() => {
       if (selectedView === "calories") {
-        fetchCalorieHistory();
+        fetchCalorieHistoryData();
       }
     }, [selectedView])
   );
 
   useEffect(() => {
     if (selectedView === "calories") {
-      fetchCalorieHistory();
+      fetchCalorieHistoryData();
     }
   }, [selectedView]);
 
-  const fetchCalorieHistory = async () => {
+  const fetchCalorieHistoryData = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const token = await getToken();
-      if (!token) {
-        setError("Not authenticated. Please log in.");
-        setLoading(false);
-        return;
-      }
-
       // Get current month's start and end dates
       const now = new Date();
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -114,24 +87,11 @@ export default function StatsPage() {
       // Format dates as YYYY-MM-DD
       const formatDate = (date: Date) => date.toISOString().split('T')[0];
       
-      const url = `${API_BASE}/food-log/history/daily-totals?start_date=${formatDate(startOfMonth)}&end_date=${formatDate(endOfMonth)}`;
+      const dailyTotals = await fetchCalorieHistory(
+        formatDate(startOfMonth), 
+        formatDate(endOfMonth)
+      );
       
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.detail || "Failed to fetch calorie history");
-      }
-
-      const dailyTotals: DailyTotal[] = await response.json();
-      
-      // Convert to chart data format
       const chartData = dailyTotals.map((day) => ({
         x: new Date(day.date),
         y: Math.round(day.calories),
@@ -266,7 +226,7 @@ export default function StatsPage() {
                 <Text style={styles.errorText}>{error}</Text>
               </View>
             ) : calorieData.length === 0 ? (
-              <Text style={styles.noDataText}>No calorie data available for this month</Text>
+              <Text style={styles.noDataText}>No calorie data available</Text>
             ) : (
               <VictoryChart
                 width={Dimensions.get("window").width - 20}

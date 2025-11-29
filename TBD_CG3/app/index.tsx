@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
@@ -12,35 +11,11 @@ import {
   View
 } from "react-native";
 import "react-native-url-polyfill/auto";
+import { storeToken } from "./services/tokenService";
 
-const API_BASE = "http://10.0.0.183:8000";
+const API_BASE = "http://10.0.0.69:8000";
 
 type AuthMode = "login" | "register";
-
-export const storeToken = async (token: string) => {
-  try {
-    await AsyncStorage.setItem("authToken", token);
-  } catch (error) {
-    console.error("Error storing token:", error);
-  }
-};
-
-export const getToken = async () => {
-  try {
-    return await AsyncStorage.getItem("authToken");
-  } catch (error) {
-    console.error("Error getting token:", error);
-    return null;
-  }
-};
-
-export const removeToken = async () => {
-  try {
-    await AsyncStorage.removeItem("authToken");
-  } catch (error) {
-    console.error("Error removing token:", error);
-  }
-};
 
 const AuthScreen: React.FC = () => {
   const [mode, setMode] = useState<AuthMode>("login");

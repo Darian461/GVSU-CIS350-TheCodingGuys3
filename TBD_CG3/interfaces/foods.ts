@@ -28,3 +28,12 @@ export interface FoodFormErrors {
   foodName?: string;
   [key: string]: string | undefined;
 }
+
+export interface DailyTotal {
+  date: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  items_count: number;
+}
