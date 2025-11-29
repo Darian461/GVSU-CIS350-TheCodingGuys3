@@ -134,7 +134,7 @@ export default function HomeScreen() {
               <View key={index} style={styles.nutrientRow}>
                 <HStack justifyContent="space-between">
                   <Text style={styles.nutrientLabel}>
-                    {n.name}: {Math.round(n.value)} / {n.goal}
+                    {n.name}: {Math.round(n.value * 10) / 10} / {n.goal}
                   </Text>
                 </HStack>
 
