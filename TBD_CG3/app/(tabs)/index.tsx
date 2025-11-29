@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import Svg from "react-native-svg";
 import { VictoryLabel, VictoryPie } from "victory-native";
-import { getToken } from "../index";
+import { getToken } from "../login";
 
 // for development
 const ip = "http://192.168.86.54:8000";

@@ -26,7 +26,7 @@ import {
   ScrollView as RNScrollView,
 } from "react-native";
 import { FoodFormErrors, NutrientField, Nutrients } from "../../interfaces";
-import { getToken } from "../index";
+import { getToken } from "../login";
 
 const ip = "http://192.168.86.54:8000";
 

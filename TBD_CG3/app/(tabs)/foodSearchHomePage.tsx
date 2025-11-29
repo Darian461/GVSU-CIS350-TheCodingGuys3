@@ -32,7 +32,7 @@ import Animated, {
 } from "react-native-reanimated";
 //import BarcodeScreen from "../foodSearch/barcode";
 //import CreateFoodScreen from "../foodSearch/createFood";
-import { getToken } from "../index";
+import { getToken } from "../login";
 
 // for development
 const ip = "http://192.168.86.54:8000";

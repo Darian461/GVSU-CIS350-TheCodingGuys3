@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { ScrollView, StyleSheet, Text, View, Dimensions } from 'react-native';
-import { Box, VStack, HStack } from '@gluestack-ui/themed';
-import { VictoryPie } from 'victory-native';
-import Svg from 'react-native-svg';
-import { getToken } from "../index";
-
+import { ScrollView, StyleSheet, Text, View, Dimensions } from "react-native";
+import { Box, VStack, HStack } from "@gluestack-ui/themed";
+import { VictoryPie } from "victory-native";
+import Svg from "react-native-svg";
+import { getToken } from "../login";
 
 const ip = "http://192.168.86.54:8000";
+
 export default function HomeScreen() {
   const [totals, setTotals] = useState<any>(null);
 
@@ -16,10 +16,7 @@ export default function HomeScreen() {
       const token = await getToken();
       console.log("Fetching with token:", token);
 
-      if (!token) {
-        console.log("No token found");
-        return;
-      }
+      if (!token) return;
 
       const res = await fetch(`${ip}/food-log/today/totals`, {
         headers: {
@@ -28,7 +25,6 @@ export default function HomeScreen() {
         },
       });
 
-      console.log("Status:", res.status);
       const text = await res.text();
       console.log("Raw response:", text);
 
@@ -41,56 +37,53 @@ export default function HomeScreen() {
     }
   }
 
-  // This runs every time the screen becomes active again
   useFocusEffect(
     React.useCallback(() => {
       loadTotals();
     }, [])
   );
 
-  if (!totals) {
-    return <Text>No totals...</Text>;
-  }
+  if (!totals) return <Text>No totals...</Text>;
 
-const screenWidth = Dimensions.get('window').width;
+  const screenWidth = Dimensions.get("window").width;
 
-export default function MealDetailsPage() {
   const macros = [
-    { x: 'Protein', y: 90, color: '#ef4444' },
-    { x: 'Carbs', y: 180, color: '#22c55e' },
-    { x: 'Fats', y: 60, color: '#facc15' },
+    {
+      x: "Protein",
+      y: Math.round(totals.total_protein) ?? 0,
+      color: "#ef4444",
+    },
+    { x: "Carbs", y: Math.round(totals.total_carbs) ?? 0, color: "#22c55e" },
+    { x: "Fat", y: Math.round(totals.total_fat) ?? 0, color: "#facc15" },
   ];
 
   const nutrients = [
-    { name: 'Calories', percent: 70 },
-    { name: 'Fat', percent: 65 },
-    { name: 'Tr. Fat', percent: 20 },
-    { name: 'Sat. Fat', percent: 45 },
-    { name: 'Carbs', percent: 80 },
-    { name: 'Fiber', percent: 50 },
-    { name: 'Sugar', percent: 90 },
-    { name: 'Added Sugar', percent: 60 },
-    { name: 'Protein', percent: 75 },
-    { name: 'Chol', percent: 30 },
-    { name: 'Sodium', percent: 55 },
-    { name: 'Vitamin A', percent: 40 },
-    { name: 'Vitamin C', percent: 65 },
-    { name: 'Calcium', percent: 35 },
-    { name: 'Iron', percent: 25 },
-    { name: 'Potassium', percent: 50 },
-    { name: 'Caffeine', percent: 10 },
+    { name: "Calories", value: totals.total_calories, goal: 200 },
+    { name: "Protein", value: totals.total_protein, goal: 150 },
+    { name: "Carbs", value: totals.total_carbs, goal: 250 },
+    { name: "Fat", value: totals.total_fat, goal: 22 },
+    { name: "Tr Fat", value: totals.total_trans_fat, goal: 2 },
+    { name: "Sat Fat", value: totals.total_saturated_fat, goal: 22 },
+    { name: "Fiber", value: totals.total_fiber, goal: 25 },
+    { name: "Chol", value: totals.total_cholesterol, goal: 300 },
+    { name: "Sodium", value: totals.total_sodium, goal: 2300 },
+    { name: "Calcium", value: totals.total_calcium, goal: 1000 },
+    { name: "Iron", value: totals.total_iron, goal: 18 },
+    { name: "Potassium", value: totals.total_potassium, goal: 3500 },
+    { name: "Caffeine", value: totals.total_caffeine, goal: 400 },
   ];
 
   return (
-    
     <ScrollView
-  decelerationRate={0.9} // smaller = slower deceleration; try 0.9 for even slower
-  scrollEventThrottle={16}
-  showsVerticalScrollIndicator={false}
-  bounces={true} // optional, for smooth iOS bounce
->
+      decelerationRate={0.9}
+      scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}
+      bounces={true}
+    >
       <VStack alignItems="center" space="lg" p="$4">
-        <Box alignItems="center" mb={30}>
+        {/* ===== PIE CHART ===== */}
+        <Box alignItems="center" mb="$5">
+          <Text style={styles.sectionTitle}>Macro Distribution</Text>
           <Svg width={300} height={300} viewBox="0 0 400 400">
             <VictoryPie
               standalone={false}
@@ -100,23 +93,59 @@ export default function MealDetailsPage() {
               innerRadius={100}
               padAngle={2}
               colorScale={macros.map((m) => m.color)}
-              labels={({ datum }) => `${datum.x}\n${datum.y}g`}
-              style={{ labels: { fill: 'black', fontSize: 18, fontWeight: '500' } }}
+              labels={() => ""} // remove labels around pie
             />
           </Svg>
         </Box>
 
-        <Box w="100%" bg="$backgroundLight100" rounded="$lg" p="$4" shadowColor="$backgroundDark950" shadowOpacity={0.1} mb={20}>
+        {/* ===== HORIZONTAL LEGEND ===== */}
+        <HStack space="lg" flexWrap="wrap" justifyContent="center">
+          {macros.map((m, idx) => (
+            <HStack key={idx} space="sm" alignItems="center">
+              {/* Color Box */}
+              <Box
+                w={18}
+                h={18}
+                borderRadius={4}
+                style={{ backgroundColor: m.color }}
+              />
+
+              {/* Label + Amount */}
+              <Text>
+                {m.x}: {m.y}g
+              </Text>
+            </HStack>
+          ))}
+        </HStack>
+
+        {/* ===== NUTRIENTS ===== */}
+        <Box
+          w="100%"
+          bg="$backgroundLight100"
+          rounded="$lg"
+          p="$4"
+          shadowColor="$backgroundDark950"
+          shadowOpacity={0.1}
+          mb={20}
+        >
           <Text style={styles.sectionTitle}>Nutrient Breakdown</Text>
           <VStack space="md">
-            {nutrients.map((nutrient, index) => (
+            {nutrients.map((n, index) => (
               <View key={index} style={styles.nutrientRow}>
-                <HStack justifyContent="space-between" alignItems="center">
-                  <Text style={styles.nutrientLabel}>{nutrient.name}</Text>
-                  <Text style={styles.nutrientPercent}>{nutrient.percent}%</Text>
+                <HStack justifyContent="space-between">
+                  <Text style={styles.nutrientLabel}>
+                    {n.name}: {Math.round(n.value)} / {n.goal}
+                  </Text>
                 </HStack>
+
+                {/* Example bar (fake visual %) */}
                 <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { width: `${nutrient.percent}%` }]} />
+                  <View
+                    style={[
+                      styles.barFill,
+                      { width: `${Math.min((n.value / n.goal) * 100, 100)}%` },
+                    ]}
+                  />
                 </View>
               </View>
             ))}
@@ -127,38 +156,32 @@ export default function MealDetailsPage() {
   );
 }
 
+const screenWidth = Dimensions.get("window").width;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
+    textAlign: "center",
   },
   nutrientRow: {
     marginBottom: 12,
   },
   nutrientLabel: {
     fontSize: 14,
-    fontWeight: '500',
-  },
-  nutrientPercent: {
-    fontSize: 14,
-    color: '#555',
+    fontWeight: "500",
   },
   barBackground: {
     height: 10,
-    backgroundColor: '#e5e7eb',
+    backgroundColor: "#e5e7eb",
     borderRadius: 5,
     marginTop: 4,
-    width: screenWidth * 0.9 - 32, // extend across the box width
+    width: screenWidth * 0.9 - 32,
   },
   barFill: {
     height: 10,
-    backgroundColor: '#4f46e5',
+    backgroundColor: "#4f46e5",
     borderRadius: 5,
   },
 });
-

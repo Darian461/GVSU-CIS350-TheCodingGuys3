@@ -55,6 +55,17 @@ def get_today_totals(db: Session = Depends(get_db), current_user = Depends(get_c
         "total_protein": sum(log.protein for log in logs),
         "total_carbs": sum(log.carbs for log in logs),
         "total_fat": sum(log.fat for log in logs),
+        "total_fiber": sum(log.fiber for log in logs),
+        "total_trans_fat": sum(log.trans_fat for log in logs),
+        "total_saturated_fat": sum(log.saturated_fat for log in logs),
+        "total_sugar": sum(log.sugar for log in logs),
+        "total_added_sugars": sum(log.added_sugars for log in logs),
+        "total_cholesterol": sum(log.cholesterol for log in logs),
+        "total_sodium": sum(log.sodium for log in logs),
+        "total_calcium": sum(log.calcium for log in logs),
+        "total_iron": sum(log.iron for log in logs),
+        "total_potassium": sum(log.potassium for log in logs),
+        "total_caffeine": sum(log.caffeine for log in logs),
         "items_logged": len(logs)
     }
 

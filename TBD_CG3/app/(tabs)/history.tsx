@@ -82,6 +82,7 @@ export default function StatsPage() {
 
   return (
     <View style={styles.chartContainer}>
+      <Text style={styles.sectionTitle}>History</Text>
       {/* Navigation Row */}
       <View style={styles.navRow}>
         <TouchableOpacity onPress={() => setSelectedView("weight")}>
@@ -318,5 +319,11 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 8,
     borderRadius: 4,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
   },
 });
