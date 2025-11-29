@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional 
+from datetime import date, timedelta 
 from . import models, schemas
 from .database import get_db
 from .auth import get_current_user_id
@@ -59,4 +60,46 @@ def get_today_totals(db: Session = Depends(get_db), current_user = Depends(get_c
     }
 
     return totals
+
+# Get daily historical data
+@router.get("/history/daily-totals")
+def get_daily_totals_history(
+    start_date: Optional[date] = Query(None),
+    end_date: Optional[date] = Query(None),
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user_id)
+):
+    if end_date is None:
+        end_date = date.today()
+    if start_date is None:
+        start_date = end_date - timedelta(days=30)
+    
+    logs = db.query(models.FoodLog).filter(
+        models.FoodLog.user_id == current_user["id"],
+        models.FoodLog.date >= start_date,
+        models.FoodLog.date <= end_date
+    ).all()
+    
+    # Aggregate by date
+    daily_totals = {}
+    for log in logs:
+        date_str = str(log.date)
+        if date_str not in daily_totals:
+            daily_totals[date_str] = {
+                "date": date_str,
+                "calories": 0,
+                "protein": 0,
+                "carbs": 0,
+                "fat": 0,
+                "items_count": 0
+            }
+        
+        daily_totals[date_str]["calories"] += log.calories * log.quantity
+        daily_totals[date_str]["protein"] += log.protein * log.quantity
+        daily_totals[date_str]["carbs"] += log.carbs * log.quantity
+        daily_totals[date_str]["fat"] += log.fat * log.quantity
+        daily_totals[date_str]["items_count"] += 1
+    
+    result = sorted(daily_totals.values(), key=lambda x: x["date"])
+    return result
 
