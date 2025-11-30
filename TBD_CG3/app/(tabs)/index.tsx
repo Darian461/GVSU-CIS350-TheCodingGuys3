@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "@/app/config/apiConfig";
+import { API_BASE_URL, DAK_BASE } from "@/app/config/apiConfig";
 import { ThemedView } from "@/components/themed-view";
 import { Box, HStack, Spinner, Text, VStack } from "@gluestack-ui/themed";
 import { useFocusEffect } from "@react-navigation/native";
