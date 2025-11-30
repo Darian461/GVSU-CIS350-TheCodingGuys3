@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, Text, View, Dimensions } from "react-native";
 import { Box, VStack, HStack } from "@gluestack-ui/themed";
 import { VictoryPie } from "victory-native";
 import Svg from "react-native-svg";
-import { getToken } from "../login";
+import { getToken } from "../services/tokenService";
 
 const ip = "http://192.168.86.54:8000";
 
