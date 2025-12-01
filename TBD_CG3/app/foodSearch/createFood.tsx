@@ -17,32 +17,37 @@ import {
   ToastTitle,
   VStack,
   useToast,
-} from '@gluestack-ui/themed';
-import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView as RNScrollView } from 'react-native';
-import { FoodFormErrors, NutrientField, Nutrients } from '../../interfaces';
-import { addCustomFoodToLog } from '../services/foodService';
+} from "@gluestack-ui/themed";
+import React, { useState } from "react";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView as RNScrollView,
+} from "react-native";
+import { FoodFormErrors, NutrientField, Nutrients } from "../../interfaces";
+import { addCustomFoodToLog } from "../services/foodService";
 
 const CreateFoodScreen: React.FC = () => {
-  const [foodName, setFoodName] = useState<string>('');
+  const [foodName, setFoodName] = useState<string>("");
   const [nutrients, setNutrients] = useState<Nutrients>({
-    calories: '',
-    fat: '',
-    'trans fat': '',
-    'saturated fat': '',
-    carbs: '',
-    fiber: '',
-    sugar: '',
-    'added sugar': '',
-    protein: '',
-    cholesterol: '',
-    sodium: '',
-    'vitamin a': '',
-    'vitamin c': '',
-    calcium: '',
-    iron: '',
-    potassium: '',
-    caffeine: '',
+    calories: "",
+    fat: "",
+    "trans fat": "",
+    "saturated fat": "",
+    carbs: "",
+    fiber: "",
+    sugar: "",
+    "added sugar": "",
+    protein: "",
+    cholesterol: "",
+    sodium: "",
+    "vitamin a": "",
+    "vitamin c": "",
+    calcium: "",
+    iron: "",
+    potassium: "",
+    caffeine: "",
   });
 
   const [errors, setErrors] = useState<FoodFormErrors>({});
@@ -50,23 +55,23 @@ const CreateFoodScreen: React.FC = () => {
   const toast = useToast();
 
   const nutrientFields: NutrientField[] = [
-    { key: 'calories', label: 'Energy (kcal)', unit: 'kcal' },
-    { key: 'fat', label: 'Total Fat (g)', unit: 'g' },
-    { key: 'trans fat', label: 'Trans Fat (g)', unit: 'g' },
-    { key: 'saturated fat', label: 'Saturated Fat (g)', unit: 'g' },
-    { key: 'carbs', label: 'Carbohydrates (g)', unit: 'g' },
-    { key: 'fiber', label: 'Dietary Fiber (g)', unit: 'g' },
-    { key: 'sugar', label: 'Total Sugars (g)', unit: 'g' },
-    { key: 'added sugar', label: 'Added Sugars (g)', unit: 'g' },
-    { key: 'protein', label: 'Protein (g)', unit: 'g' },
-    { key: 'cholesterol', label: 'Cholesterol (mg)', unit: 'mg' },
-    { key: 'sodium', label: 'Sodium (mg)', unit: 'mg' },
-    { key: 'vitamin a', label: 'Vitamin A (mcg)', unit: 'mcg' },
-    { key: 'vitamin c', label: 'Vitamin C (mg)', unit: 'mg' },
-    { key: 'calcium', label: 'Calcium (mg)', unit: 'mg' },
-    { key: 'iron', label: 'Iron (mg)', unit: 'mg' },
-    { key: 'potassium', label: 'Potassium (mg)', unit: 'mg' },
-    { key: 'caffeine', label: 'Caffeine (mg)', unit: 'mg' },
+    { key: "calories", label: "Energy (kcal)", unit: "kcal" },
+    { key: "fat", label: "Total Fat (g)", unit: "g" },
+    { key: "trans fat", label: "Trans Fat (g)", unit: "g" },
+    { key: "saturated fat", label: "Saturated Fat (g)", unit: "g" },
+    { key: "carbs", label: "Carbohydrates (g)", unit: "g" },
+    { key: "fiber", label: "Dietary Fiber (g)", unit: "g" },
+    { key: "sugar", label: "Total Sugars (g)", unit: "g" },
+    { key: "added sugar", label: "Added Sugars (g)", unit: "g" },
+    { key: "protein", label: "Protein (g)", unit: "g" },
+    { key: "cholesterol", label: "Cholesterol (mg)", unit: "mg" },
+    { key: "sodium", label: "Sodium (mg)", unit: "mg" },
+    { key: "vitamin a", label: "Vitamin A (mcg)", unit: "mcg" },
+    { key: "vitamin c", label: "Vitamin C (mg)", unit: "mg" },
+    { key: "calcium", label: "Calcium (mg)", unit: "mg" },
+    { key: "iron", label: "Iron (mg)", unit: "mg" },
+    { key: "potassium", label: "Potassium (mg)", unit: "mg" },
+    { key: "caffeine", label: "Caffeine (mg)", unit: "mg" },
   ];
 
   const handleNutrientChange = (key: keyof Nutrients, value: string): void => {
@@ -85,16 +90,16 @@ const CreateFoodScreen: React.FC = () => {
 
   const validateForm = (): boolean => {
     const newErrors: FoodFormErrors = {};
-    
+
     // Validate name is filled
     if (!foodName.trim()) {
-      newErrors.foodName = 'Food name is required';
+      newErrors.foodName = "Food name is required";
     }
 
     // Validate only positive numbers
     Object.entries(nutrients).forEach(([key, value]: [string, string]) => {
       if (value && (isNaN(Number(value)) || Number(value) < 0)) {
-        newErrors[key] = 'Must be a positive number';
+        newErrors[key] = "Must be a positive number";
       }
     });
 
@@ -114,17 +119,17 @@ const CreateFoodScreen: React.FC = () => {
         food_name: foodName,
         calories: Number(nutrients.calories) || 0,
         fat: Number(nutrients.fat) || 0,
-        trans_fat: Number(nutrients['trans fat']) || 0,
-        saturated_fat: Number(nutrients['saturated fat']) || 0,
+        trans_fat: Number(nutrients["trans fat"]) || 0,
+        saturated_fat: Number(nutrients["saturated fat"]) || 0,
         carbs: Number(nutrients.carbs) || 0,
         fiber: Number(nutrients.fiber) || 0,
         sugar: Number(nutrients.sugar) || 0,
-        added_sugars: Number(nutrients['added sugar']) || 0,
+        added_sugars: Number(nutrients["added sugar"]) || 0,
         protein: Number(nutrients.protein) || 0,
         cholesterol: Number(nutrients.cholesterol) || 0,
         sodium: Number(nutrients.sodium) || 0,
-        vitamin_a: Number(nutrients['vitamin a']) || 0,
-        vitamin_c: Number(nutrients['vitamin c']) || 0,
+        vitamin_a: Number(nutrients["vitamin a"]) || 0,
+        vitamin_c: Number(nutrients["vitamin c"]) || 0,
         calcium: Number(nutrients.calcium) || 0,
         iron: Number(nutrients.iron) || 0,
         potassium: Number(nutrients.potassium) || 0,
@@ -132,7 +137,7 @@ const CreateFoodScreen: React.FC = () => {
         quantity: 1,
       };
 
-      console.log('Submitting custom food:', foodLogData);
+      console.log("Submitting custom food:", foodLogData);
 
       await addCustomFoodToLog(foodLogData);
 
@@ -154,32 +159,31 @@ const CreateFoodScreen: React.FC = () => {
       });
 
       // Reset form
-      setFoodName('');
+      setFoodName("");
       setNutrients({
-        calories: '',
-        fat: '',
-        'trans fat': '',
-        'saturated fat': '',
-        carbs: '',
-        fiber: '',
-        sugar: '',
-        'added sugar': '',
-        protein: '',
-        cholesterol: '',
-        sodium: '',
-        'vitamin a': '',
-        'vitamin c': '',
-        calcium: '',
-        iron: '',
-        potassium: '',
-        caffeine: '',
+        calories: "",
+        fat: "",
+        "trans fat": "",
+        "saturated fat": "",
+        carbs: "",
+        fiber: "",
+        sugar: "",
+        "added sugar": "",
+        protein: "",
+        cholesterol: "",
+        sodium: "",
+        "vitamin a": "",
+        "vitamin c": "",
+        calcium: "",
+        iron: "",
+        potassium: "",
+        caffeine: "",
       });
-
     } catch (error: any) {
-      console.error('Error submitting custom food:', error);
+      console.error("Error submitting custom food:", error);
       Alert.alert(
-        'Error',
-        error.message || 'Failed to add food to log. Please try again.'
+        "Error",
+        error.message || "Failed to add food to log. Please try again."
       );
     } finally {
       setIsSubmitting(false);
@@ -188,7 +192,7 @@ const CreateFoodScreen: React.FC = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
       <RNScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -210,14 +214,17 @@ const CreateFoodScreen: React.FC = () => {
                   onChangeText={(text: string) => {
                     setFoodName(text);
                     if (errors.foodName) {
-                      setErrors((prev: FoodFormErrors) => ({ ...prev, foodName: undefined }));
+                      setErrors((prev: FoodFormErrors) => ({
+                        ...prev,
+                        foodName: undefined,
+                      }));
                     }
                   }}
                   onBlur={() => {
                     if (!foodName.trim()) {
-                      setErrors((prev: FoodFormErrors) => ({ 
-                        ...prev, 
-                        foodName: 'Food name is required' 
+                      setErrors((prev: FoodFormErrors) => ({
+                        ...prev,
+                        foodName: "Food name is required",
                       }));
                     }
                   }}
@@ -247,13 +254,18 @@ const CreateFoodScreen: React.FC = () => {
                     <InputField
                       placeholder={`Enter ${label.toLowerCase()}`}
                       value={nutrients[key]}
-                      onChangeText={(text: string) => handleNutrientChange(key, text)}
+                      onChangeText={(text: string) =>
+                        handleNutrientChange(key, text)
+                      }
                       onBlur={() => {
                         const value = nutrients[key];
-                        if (value && (isNaN(Number(value)) || Number(value) < 0)) {
+                        if (
+                          value &&
+                          (isNaN(Number(value)) || Number(value) < 0)
+                        ) {
                           setErrors((prev: FoodFormErrors) => ({
                             ...prev,
-                            [key]: 'Must be a positive number',
+                            [key]: "Must be a positive number",
                           }));
                         }
                       }}
@@ -280,7 +292,7 @@ const CreateFoodScreen: React.FC = () => {
               isDisabled={isSubmitting}
             >
               <ButtonText>
-                {isSubmitting ? 'Adding...' : 'Add to Food Log'}
+                {isSubmitting ? "Adding..." : "Add to Food Log"}
               </ButtonText>
             </Button>
           </VStack>

@@ -7,6 +7,10 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Modal,
+  TextInput,
+  Button,
+  Alert,
 } from "react-native";
 import {
   VictoryAxis,
@@ -15,39 +19,11 @@ import {
   VictoryScatter,
   VictoryTheme,
 } from "victory-native";
+import { getToken } from "../services/tokenService";
 import { fetchCalorieHistory } from "../services/historyService";
+import { WEIGHT_ENDPOINT } from "../config/apiConfig";
 
-const weightData = [
-  { x: new Date(2025, 10, 1), y: 180 },
-  { x: new Date(2025, 10, 2), y: 182 },
-  { x: new Date(2025, 10, 3), y: 177 },
-  { x: new Date(2025, 10, 4), y: 179 },
-  { x: new Date(2025, 10, 10), y: 173 },
-  { x: new Date(2025, 10, 12), y: 175 },
-  { x: new Date(2025, 10, 15), y: 172 },
-  { x: new Date(2025, 10, 18), y: 171 },
-  { x: new Date(2025, 10, 20), y: 169 },
-  { x: new Date(2025, 10, 22), y: 168 },
-  { x: new Date(2025, 10, 25), y: 167 },
-];
-
-const HorizontalLine = (yValue: number, color: string) => (
-  <VictoryLine
-    data={[
-      { x: weightData[0].x, y: yValue },
-      { x: weightData[weightData.length - 1].x, y: yValue },
-    ]}
-    style={{
-      data: {
-        stroke: color,
-        strokeDasharray: "5,5",
-        strokeWidth: 2,
-      },
-    }}
-  />
-);
-
-interface CalorieDataPoint {
+interface DataPoint {
   x: Date;
   y: number;
 }
@@ -56,76 +32,157 @@ export default function StatsPage() {
   const [selectedView, setSelectedView] = useState<"weight" | "calories">(
     "weight"
   );
-  const [calorieData, setCalorieData] = useState<CalorieDataPoint[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      if (selectedView === "calories") {
-        fetchCalorieHistoryData();
-      }
-    }, [selectedView])
-  );
+  // Weight states
+  const [weightData, setWeightData] = useState<DataPoint[]>([]);
+  const [weightLoading, setWeightLoading] = useState(false);
+  const [weightError, setWeightError] = useState<string | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newWeight, setNewWeight] = useState("");
 
-  useEffect(() => {
-    if (selectedView === "calories") {
-      fetchCalorieHistoryData();
-    }
-  }, [selectedView]);
+  // Calorie states
+  const [calorieData, setCalorieData] = useState<DataPoint[]>([]);
+  const [calorieLoading, setCalorieLoading] = useState(false);
+  const [calorieError, setCalorieError] = useState<string | null>(null);
 
-  const fetchCalorieHistoryData = async () => {
-    setLoading(true);
-    setError(null);
-    
+  const goalWeight = 170;
+  const calGoal = 2000;
+
+  // Fetch weight history
+  const loadWeightHistory = async () => {
+    setWeightLoading(true);
+    setWeightError(null);
     try {
-      // Get current month's start and end dates
+      const token = await getToken();
+      if (!token) throw new Error("No auth token");
+
+      const res = await fetch(WEIGHT_ENDPOINT, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch weight history");
+
+      const data = await res.json();
+      const formatted: DataPoint[] = data
+        .map((item: any) => ({
+          x: new Date(item.logged_at),
+          y: item.weight,
+        }))
+        .sort((a, b) => a.x.getTime() - b.x.getTime());
+
+      setWeightData(formatted);
+    } catch (err) {
+      console.error("loadWeightHistory error:", err);
+      setWeightError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setWeightLoading(false);
+    }
+  };
+
+  // Log a new weight
+  const logWeight = async (weight: number) => {
+    try {
+      const token = await getToken();
+      if (!token) throw new Error("No auth token");
+
+      const res = await fetch(WEIGHT_ENDPOINT, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ weight }),
+      });
+
+      if (!res.ok) throw new Error("Failed to log weight");
+
+      setModalVisible(false);
+      setNewWeight("");
+      loadWeightHistory();
+    } catch (err) {
+      console.error("logWeight error:", err);
+      Alert.alert(
+        "Error",
+        err instanceof Error ? err.message : "Unknown error"
+      );
+    }
+  };
+
+  // Fetch calorie history
+  const fetchCalorieHistoryData = async () => {
+    setCalorieLoading(true);
+    setCalorieError(null);
+    try {
       const now = new Date();
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-      
-      // Format dates as YYYY-MM-DD
-      const formatDate = (date: Date) => date.toISOString().split('T')[0];
-      
+
+      const formatDate = (date: Date) => date.toISOString().split("T")[0];
+
       const dailyTotals = await fetchCalorieHistory(
-        formatDate(startOfMonth), 
+        formatDate(startOfMonth),
         formatDate(endOfMonth)
       );
-      
-      const chartData = dailyTotals.map((day) => ({
+
+      const formatted: DataPoint[] = dailyTotals.map((day) => ({
         x: new Date(day.date),
         y: Math.round(day.calories),
       }));
 
-      setCalorieData(chartData);
+      setCalorieData(formatted);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      console.error("Error fetching calorie history:", err);
+      console.error("fetchCalorieHistoryData error:", err);
+      setCalorieError(err instanceof Error ? err.message : "Unknown error");
     } finally {
-      setLoading(false);
+      setCalorieLoading(false);
     }
   };
 
-  const firstY = weightData[0]?.y;
-  const currentY = weightData[weightData.length - 1]?.y;
-  const goalY = 170;
-  const calGoal = 2000;
-  
-  // Calculate statistics from calorie data
-  const avgCal = calorieData.length > 0
-    ? calorieData.reduce((sum, entry) => sum + entry.y, 0) / calorieData.length
-    : 0;
+  useFocusEffect(
+    React.useCallback(() => {
+      if (selectedView === "weight") loadWeightHistory();
+      else fetchCalorieHistoryData();
+    }, [selectedView])
+  );
+
+  useEffect(() => {
+    if (selectedView === "weight") loadWeightHistory();
+    else fetchCalorieHistoryData();
+  }, [selectedView]);
+
+  // Goals
+  const HorizontalLine = (data: DataPoint[], yValue: number, color: string) => (
+    <VictoryLine
+      data={[
+        { x: data[0]?.x ?? new Date(), y: yValue },
+        { x: data[data.length - 1]?.x ?? new Date(), y: yValue },
+      ]}
+      style={{
+        data: { stroke: color, strokeDasharray: "5,5", strokeWidth: 2 },
+      }}
+    />
+  );
+
+  // Weight stats
+  const firstWeight = weightData[0]?.y ?? 0;
+  const currentWeight = weightData[weightData.length - 1]?.y ?? 0;
+
+  // Calorie stats
+  const avgCal =
+    calorieData.length > 0
+      ? calorieData.reduce((sum, entry) => sum + entry.y, 0) /
+        calorieData.length
+      : 0;
   const avgCalRounded = Math.round(avgCal);
-  const minCal = calorieData.length > 0 
-    ? Math.min(...calorieData.map((entry) => entry.y))
-    : 0;
-  const maxCal = calorieData.length > 0
-    ? Math.max(...calorieData.map((entry) => entry.y))
-    : 0;
+  const minCal =
+    calorieData.length > 0 ? Math.min(...calorieData.map((e) => e.y)) : 0;
+  const maxCal =
+    calorieData.length > 0 ? Math.max(...calorieData.map((e) => e.y)) : 0;
 
   return (
     <View style={styles.chartContainer}>
-      {/* Navigation Row */}
+      <Text style={styles.sectionTitle}>History</Text>
+
       <View style={styles.navRow}>
         <TouchableOpacity onPress={() => setSelectedView("weight")}>
           <Text
@@ -149,117 +206,148 @@ export default function StatsPage() {
         </TouchableOpacity>
       </View>
 
-      {/* WEIGHT Page */}
+      {/* Weight View */}
       {selectedView === "weight" && (
         <>
           <View style={styles.chartBox}>
-            <Text style={styles.chartTitle}>Weight Progress</Text>
-            <VictoryChart
-              width={Dimensions.get("window").width - 20}
-              theme={VictoryTheme.material}
-              scale={{ x: "time" }}
-              padding={{ top: 20, bottom: 50, left: 50, right: 60 }}
-            >
-              <VictoryAxis
-                tickFormat={(t) => `${t.getMonth() + 1}/${t.getDate()}`}
-                style={{
-                  tickLabels: { fontSize: 10, angle: -45, padding: 15 },
-                }}
-              />
-              <VictoryAxis
-                dependentAxis
-                label="lbs"
-                style={{
-                  axisLabel: { padding: 35, fontSize: 11 },
-                  tickLabels: { fontSize: 10, padding: 5 },
-                }}
-              />
-              <VictoryLine
-                data={weightData}
-                style={{ data: { stroke: "#007AFF", strokeWidth: 3 } }}
-              />
-              {HorizontalLine(firstY, "red")}
-              {HorizontalLine(170, "green")}
-            </VictoryChart>
+            {weightLoading ? (
+              <ActivityIndicator size="large" color="#007AFF" />
+            ) : weightError ? (
+              <Text style={styles.errorText}>{weightError}</Text>
+            ) : weightData.length === 0 ? (
+              <Text style={styles.noDataText}>No weight data available</Text>
+            ) : (
+              <>
+                <Text style={styles.chartTitle}>Weight Progress</Text>
+                <VictoryChart
+                  width={Dimensions.get("window").width - 20}
+                  theme={VictoryTheme.material}
+                  scale={{ x: "time" }}
+                  padding={{ top: 20, bottom: 50, left: 50, right: 60 }}
+                >
+                  <VictoryAxis
+                    tickFormat={(t) => `${t.getMonth() + 1}/${t.getDate()}`}
+                    style={{
+                      tickLabels: { fontSize: 10, angle: -45, padding: 15 },
+                    }}
+                  />
+                  <VictoryAxis
+                    dependentAxis
+                    label="lbs"
+                    style={{
+                      axisLabel: { padding: 35, fontSize: 11 },
+                      tickLabels: { fontSize: 10 },
+                    }}
+                  />
+                  <VictoryLine
+                    data={weightData}
+                    style={{ data: { stroke: "#007AFF", strokeWidth: 3 } }}
+                  />
+                  {HorizontalLine(weightData, firstWeight, "red")}
+                  {HorizontalLine(weightData, goalWeight, "green")}
+                </VictoryChart>
+              </>
+            )}
           </View>
 
           <View style={styles.displayBox}>
-            <Text style={styles.recapTitle}></Text>
             <View style={styles.labelRow}>
               <View style={styles.labelCell}>
                 <Text style={styles.labelTitle}>Starting</Text>
-                <Text style={styles.labelValue}>{firstY} lbs</Text>
-                <Text style={styles.labelUnits}>lbs</Text>
+                <Text style={styles.labelValue}>{firstWeight} lbs</Text>
               </View>
               <View style={styles.labelCell}>
                 <Text style={styles.labelTitle}>Current</Text>
-                <Text style={styles.labelValue}>{currentY} lbs</Text>
-                <Text style={styles.labelUnits}>lbs</Text>
+                <Text style={styles.labelValue}>{currentWeight} lbs</Text>
               </View>
               <View style={styles.labelCell}>
                 <Text style={styles.labelTitle}>Goal</Text>
-                <Text style={styles.labelValue}>{goalY} lbs</Text>
-                <Text style={styles.labelUnits}>lbs</Text>
+                <Text style={styles.labelValue}>{goalWeight} lbs</Text>
               </View>
             </View>
             <Text style={styles.difference}>
-              Remaining till Goal: {Math.abs(currentY - goalY)} lbs
+              Remaining till Goal: {Math.abs(currentWeight - goalWeight)} lbs
             </Text>
           </View>
 
-          <View style={styles.logWeightButton}>
+          <TouchableOpacity
+            style={styles.logWeightButton}
+            onPress={() => setModalVisible(true)}
+          >
             <Text style={{ color: "#f9f9f9" }}>+ Log New Weight</Text>
-          </View>
+          </TouchableOpacity>
+
+          <Modal visible={modalVisible} animationType="slide" transparent>
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text>Enter new weight (lbs):</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={newWeight}
+                  onChangeText={setNewWeight}
+                />
+                <Button
+                  title="Submit"
+                  onPress={() => logWeight(Number(newWeight))}
+                />
+                <Button
+                  title="Cancel"
+                  color="red"
+                  onPress={() => setModalVisible(false)}
+                />
+              </View>
+            </View>
+          </Modal>
         </>
       )}
 
-      {/* CALORIES Page */}
+      {/* Calorie View */}
       {selectedView === "calories" && (
         <>
           <View style={styles.chartBox}>
-            <Text style={styles.chartTitle}>Calories History</Text>
-            
-            {loading ? (
-              <ActivityIndicator size="large" color="#007AFF" style={{ marginVertical: 50 }} />
-            ) : error ? (
-              <View style={{ paddingVertical: 30 }}>
-                <Text style={styles.errorText}>{error}</Text>
-              </View>
+            {calorieLoading ? (
+              <ActivityIndicator size="large" color="#007AFF" />
+            ) : calorieError ? (
+              <Text style={styles.errorText}>{calorieError}</Text>
             ) : calorieData.length === 0 ? (
               <Text style={styles.noDataText}>No calorie data available</Text>
             ) : (
-              <VictoryChart
-                width={Dimensions.get("window").width - 20}
-                theme={VictoryTheme.material}
-                scale={{ x: "time" }}
-                padding={{ top: 20, bottom: 50, left: 50, right: 60 }}
-              >
-                <VictoryAxis
-                  tickFormat={(t) => `${t.getMonth() + 1}/${t.getDate()}`}
-                  style={{
-                    tickLabels: { fontSize: 10, angle: -45, padding: 15 },
-                  }}
-                />
-                <VictoryAxis
-                  dependentAxis
-                  label="Calories"
-                  style={{
-                    axisLabel: { padding: 40, fontSize: 11 },
-                    tickLabels: { fontSize: 10, padding: 5 },
-                  }}
-                />
-                <VictoryScatter
-                  data={calorieData}
-                  size={5}
-                  style={{
-                    data: {
-                      fill: "#FF9500",
-                      stroke: "#FF9500",
-                      strokeWidth: 1.5,
-                    },
-                  }}
-                />
-              </VictoryChart>
+              <>
+                <Text style={styles.chartTitle}>Calories History</Text>
+                <VictoryChart
+                  width={Dimensions.get("window").width - 20}
+                  theme={VictoryTheme.material}
+                  scale={{ x: "time" }}
+                  padding={{ top: 20, bottom: 50, left: 50, right: 60 }}
+                >
+                  <VictoryAxis
+                    tickFormat={(t) => `${t.getMonth() + 1}/${t.getDate()}`}
+                    style={{
+                      tickLabels: { fontSize: 10, angle: -45, padding: 15 },
+                    }}
+                  />
+                  <VictoryAxis
+                    dependentAxis
+                    label="Calories"
+                    style={{
+                      axisLabel: { padding: 40, fontSize: 11 },
+                      tickLabels: { fontSize: 10 },
+                    }}
+                  />
+                  <VictoryScatter
+                    data={calorieData}
+                    size={5}
+                    style={{
+                      data: {
+                        fill: "#FF9500",
+                        stroke: "#FF9500",
+                        strokeWidth: 1.5,
+                      },
+                    }}
+                  />
+                </VictoryChart>
+              </>
             )}
           </View>
 
@@ -331,39 +419,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
     alignItems: "center",
   },
-  recapTitle: {
-    fontSize: 1,
-    fontWeight: "700",
-    marginBottom: 5,
-  },
   labelRow: {
     flexDirection: "row",
     justifyContent: "space-around",
     width: "100%",
     marginBottom: 8,
   },
-  labelCell: {
-    alignItems: "center",
-    flex: 1,
-  },
-  labelTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  labelValue: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#007AFF",
-  },
-  labelUnits: {
-    fontSize: 12,
-    color: "#555",
-  },
-  difference: {
-    fontSize: 14,
-    color: "#555",
-    marginTop: 5,
-  },
+  labelCell: { alignItems: "center", flex: 1 },
+  labelTitle: { fontSize: 14, fontWeight: "600" },
+  labelValue: { fontSize: 16, fontWeight: "700", color: "#007AFF" },
+  labelUnits: { fontSize: 12, color: "#555" },
+  difference: { fontSize: 14, color: "#555", marginTop: 5 },
   logWeightButton: {
     marginTop: 15,
     backgroundColor: "#000000ff",
@@ -379,15 +445,28 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     width: "100%",
     marginBottom: 12,
-    borderRadius: 4,
   },
-  errorText: {
-    color: "red",
-    textAlign: "center",
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    padding: 20,
   },
-  noDataText: {
-    color: "#555",
+  modalContent: { backgroundColor: "#fff", borderRadius: 10, padding: 20 },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 8,
+    marginVertical: 10,
+    borderRadius: 5,
+    fontSize: 16,
+  },
+  errorText: { color: "red", textAlign: "center" },
+  noDataText: { color: "#555", textAlign: "center", marginVertical: 20 },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
     textAlign: "center",
-    marginVertical: 20,
   },
 });

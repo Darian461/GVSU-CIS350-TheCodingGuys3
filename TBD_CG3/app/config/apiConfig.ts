@@ -1,2 +1,3 @@
-// Centralized API configuration
-export const API_BASE_URL = 'http://10.0.0.69:8000';
+// apiConfig.ts
+export const API_BASE_URL = "http://192.168.1.141:8000";
+export const WEIGHT_ENDPOINT = `${API_BASE_URL}/weight`;

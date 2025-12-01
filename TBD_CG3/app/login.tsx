@@ -9,7 +9,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import "react-native-url-polyfill/auto";
 import { storeToken } from "./services/tokenService";
@@ -87,7 +87,6 @@ const AuthScreen: React.FC = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.card}>
-
         {/* LOGO */}
         <Image
           source={require("../assets/images/macal_logo.png")}
@@ -135,14 +134,15 @@ const AuthScreen: React.FC = () => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setMode(mode === "login" ? "register" : "login")}>
+        <TouchableOpacity
+          onPress={() => setMode(mode === "login" ? "register" : "login")}
+        >
           <Text style={styles.toggleText}>
             {mode === "login"
               ? "Don't have an account? Sign up"
               : "Already have an account? Log in"}
           </Text>
         </TouchableOpacity>
-
       </View>
     </KeyboardAvoidingView>
   );
@@ -219,4 +219,3 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
-
