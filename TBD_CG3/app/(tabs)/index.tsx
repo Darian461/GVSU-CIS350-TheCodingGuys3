@@ -64,7 +64,7 @@ export default function HomeScreen() {
 
   if (loading) {
     return (
-      <ThemedView style={[styles.container, { justifyContent: "center" }]}> 
+      <ThemedView style={[styles.container, { justifyContent: "center" }]}>
         <Box p="$4" alignItems="center">
           <Spinner size="large" />
         </Box>
@@ -100,12 +100,12 @@ export default function HomeScreen() {
           <HStack space="lg">
             <StatBox
               title="Protein"
-              value={`${totals.total_protein}g`}
+              value={`${Math.round(totals.total_protein)}g`}
               color="#ef4444"
             />
             <StatBox
               title="Carbs"
-              value={`${totals.total_carbs}g`}
+              value={`${Math.round(totals.total_carbs)}g`}
               color="#22c55e"
             />
           </HStack>
@@ -147,7 +147,7 @@ export default function HomeScreen() {
           <HStack space="lg">
             <StatBox
               title="Fats"
-              value={`${totals.total_fat}g`}
+              value={`${Math.round(totals.total_fat)}g`}
               color="#facc15"
             />
             <StatBox title="Water" value="100ml" color="#2d05f6ff" />

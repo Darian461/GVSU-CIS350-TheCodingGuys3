@@ -12,10 +12,21 @@ import {
   useColorMode,
 } from "@gluestack-ui/themed";
 import { Moon, Sun, User, Settings, LogOut } from "lucide-react-native";
+import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function SettingsScreen() {
   const { colorMode, setColorMode } = useColorMode();
   const isDarkMode = colorMode === "dark";
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("authToken");
+      router.replace("/login"); // or "/"
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   const toggleTheme = () => {
     setColorMode(isDarkMode ? "light" : "dark");
@@ -73,7 +84,7 @@ export default function SettingsScreen() {
 
       {/* Menu Options */}
       <VStack space="md">
-        <Pressable>
+        <Pressable onPress={() => router.push("../index")}>
           <HStack
             h={48}
             alignItems="center"
@@ -103,7 +114,7 @@ export default function SettingsScreen() {
 
         <Divider my="$2" />
 
-        <Pressable>
+        <Pressable onPress={handleLogout}>
           <HStack
             h={48}
             alignItems="center"

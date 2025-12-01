@@ -21,13 +21,8 @@ import {
   SearchIcon,
   Spinner,
   Text,
-  Toast,
-  ToastDescription,
-  ToastTitle,
-  VStack,
-  useToast,
 } from "@gluestack-ui/themed";
-import { BadgePlus } from "lucide-react-native";
+import { BadgePlus, Barcode } from "lucide-react-native";
 import React from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
 import Animated, {
@@ -36,7 +31,11 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import CreateFoodScreen from "../foodSearch/createFood";
-import { addFoodToLog, fetchFood, fetchFoodDetails } from "../services/foodService";
+import {
+  addFoodToLog,
+  fetchFood,
+  fetchFoodDetails,
+} from "../services/foodService";
 
 const getNutrientValue = (nutrients: any[], label: string): number => {
   const nutrient = nutrients?.find((n) => n.label === label);
@@ -54,6 +53,7 @@ const getNutrientValue = (nutrients: any[], label: string): number => {
 
 const BUTTONS = [
   { key: "search", icon: SearchIcon },
+  { key: "barcode", icon: Barcode },
   { key: "create", icon: BadgePlus },
 ];
 
@@ -178,7 +178,6 @@ export default function FoodSearch() {
   const [selectedFood, setSelectedFood] = React.useState<any>(null);
   const [foodDetails, setFoodDetails] = React.useState<any>(null);
   const [loadingDetails, setLoadingDetails] = React.useState(false);
-  const toast = useToast();
 
   React.useEffect(() => {
     if (!searchText.trim()) {
@@ -321,6 +320,7 @@ export default function FoodSearch() {
           </ThemedView>
         )}
 
+        {activeButton === "barcode" && <BarcodeScreen />}
         {activeButton === "create" && <CreateFoodScreen />}
       </ScrollView>
 
@@ -492,27 +492,11 @@ export default function FoodSearch() {
 
                   console.log("Sending complete food data:", foodLogData);
 
-                      await addFoodToLog(foodLogData);
+                  await addFoodToLog(foodLogData);
 
-                      toast.show({
-                        placement: "bottom",
-                        render: ({ id }) => {
-                          return (
-                            <Toast nativeID={id} action="success" variant="solid">
-                              <VStack space="xs">
-                                <ToastTitle>Success!</ToastTitle>
-                                <ToastDescription>
-                                  {selectedFood?.description || 'Food'} has been added to your food log
-                                </ToastDescription>
-                              </VStack>
-                            </Toast>
-                          );
-                        },
-                      });
-
-                      setShowModal(false);
-                      setSelectedFood(null);
-                      setFoodDetails(null);
+                  setShowModal(false);
+                  setSelectedFood(null);
+                  setFoodDetails(null);
                 } catch (error: any) {
                   alert(error.message || "Failed to add food to log");
                 }
@@ -524,4 +508,5 @@ export default function FoodSearch() {
         </ModalContent>
       </Modal>
     </>
-  )};
+  );
+}

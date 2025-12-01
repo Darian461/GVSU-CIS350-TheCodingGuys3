@@ -2,10 +2,10 @@
 
 # Team Members and Roles
 
-* [Nikolai Escondo](https://github.com/nescondo/CIS350-HW2-Escondo)
-* [Darian Radakovic](https://github.com/Darian461/CIS350-HW2-Radakovic)
-* [Todd Parcheta](https://github.com/ToddPar/CIS350-HW2-Parcheta.git)
-* [Dakota Steele](https://github.com/Jus1Dak/CIS350-HW2-Steele)
+- [Nikolai Escondo](https://github.com/nescondo/CIS350-HW2-Escondo)
+- [Darian Radakovic](https://github.com/Darian461/CIS350-HW2-Radakovic)
+- [Todd Parcheta](https://github.com/ToddPar/CIS350-HW2-Parcheta.git)
+- [Dakota Steele](https://github.com/Jus1Dak/CIS350-HW2-Steele)
 
 # Abstract
 
@@ -20,6 +20,7 @@ functionalities of health and fitness applications such as food logging and data
 An intuitive, modern, easy-to-use all-in-one fitness web application that includes the ability to track calories, create recipes to log in our favorite foods, and data visualizations of the user's progress. We emphasize the intuitiveness and cleanliness of the UI - where we plan to design an interface that is clear of visual clutter and navigation is quick and easy to use. We plan to have processes that encompass the majority of what is used commonly in all calorie/macro tracking applications.
 
 # Product Features
+
 <ol>
     <li>The ability to track calories, macronutrients, and micronutrients on a day-to-day basis.</li>
     <li>Data visualization plots will be included to showcase progress in nutrition and weight on a daily, weekly, or monthly basis.</li>
@@ -29,6 +30,7 @@ An intuitive, modern, easy-to-use all-in-one fitness web application that includ
 </ol>
 
 # Technologies Used
+
 <ol>
     <li><b>React Native</b></li>
         <ol>
@@ -77,6 +79,7 @@ An intuitive, modern, easy-to-use all-in-one fitness web application that includ
 </ol>
 
 # Requirements
+
 <ol>
  <li>Mobile device (Android or iOS preferred)</li>
  <li>Stable internet connection</li>
@@ -84,6 +87,7 @@ An intuitive, modern, easy-to-use all-in-one fitness web application that includ
 </ol>
 
 # Installation
+
 <ol>
  <li>Install the latest version of <a href="https://nodejs.org/en/download/current">Node.js.</a></li>
  <li>Install the latest version of <a href="https://www.docker.com/">Docker Desktop.</a></li>
