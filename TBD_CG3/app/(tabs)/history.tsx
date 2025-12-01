@@ -29,6 +29,47 @@ interface DataPoint {
 }
 
 export default function StatsPage() {
+  // DEMO MODE TOGGLE
+  const USE_DEMO_DATA = false; // turn off after presentation
+
+  // DEMO WEIGHT DATA (158 → 178 over 4 months)
+  const demoWeightData: DataPoint[] = [
+    { x: new Date(2025, 0, 1), y: 158 },
+    { x: new Date(2025, 0, 15), y: 155 },
+    { x: new Date(2025, 0, 30), y: 160 },
+    { x: new Date(2025, 1, 14), y: 163 },
+    { x: new Date(2025, 1, 28), y: 164 },
+    { x: new Date(2025, 2, 15), y: 168 },
+    { x: new Date(2025, 2, 30), y: 170 },
+    { x: new Date(2025, 3, 14), y: 173 },
+    { x: new Date(2025, 3, 28), y: 174 },
+  ];
+
+  // DEMO CALORIE DATA
+  const demoCalorieData: DataPoint[] = [
+    { x: new Date(2025, 0, 1), y: 2100 },
+    { x: new Date(2025, 0, 2), y: 1950 },
+    { x: new Date(2025, 0, 3), y: 2050 },
+    { x: new Date(2025, 0, 4), y: 2300 },
+    { x: new Date(2025, 0, 5), y: 2400 },
+    { x: new Date(2025, 0, 6), y: 2200 },
+    { x: new Date(2025, 0, 7), y: 3600 }, // cheat day #1
+    { x: new Date(2025, 0, 8), y: 2000 },
+    { x: new Date(2025, 0, 9), y: 1900 },
+    { x: new Date(2025, 0, 10), y: 2100 },
+    { x: new Date(2025, 0, 11), y: 2500 },
+    { x: new Date(2025, 0, 12), y: 2300 },
+    { x: new Date(2025, 0, 13), y: 2200 },
+    { x: new Date(2025, 0, 14), y: 3200 }, // cheat day #2
+    { x: new Date(2025, 0, 15), y: 2000 },
+    { x: new Date(2025, 0, 16), y: 1850 },
+    { x: new Date(2025, 0, 17), y: 1950 },
+    { x: new Date(2025, 0, 18), y: 2300 },
+    { x: new Date(2025, 0, 19), y: 2600 },
+    { x: new Date(2025, 0, 20), y: 2400 },
+    { x: new Date(2025, 0, 21), y: 3300 }, // cheat day #3
+  ];
+
   const [selectedView, setSelectedView] = useState<"weight" | "calories">(
     "weight"
   );
@@ -52,6 +93,15 @@ export default function StatsPage() {
   const loadWeightHistory = async () => {
     setWeightLoading(true);
     setWeightError(null);
+
+    // DEMO MODE OVERRIDE
+    if (USE_DEMO_DATA) {
+      setWeightData(demoWeightData);
+      setWeightLoading(false);
+      return;
+    }
+
+    // ---- REAL API BELOW ----
     try {
       const token = await getToken();
       if (!token) throw new Error("No auth token");
@@ -63,12 +113,13 @@ export default function StatsPage() {
       if (!res.ok) throw new Error("Failed to fetch weight history");
 
       const data = await res.json();
+
       const formatted: DataPoint[] = data
         .map((item: any) => ({
           x: new Date(item.logged_at),
           y: item.weight,
         }))
-        .sort((a: DataPoint, b: DataPoint) => a.x.getTime() - b.x.getTime());
+        .sort((a, b) => a.x.getTime() - b.x.getTime());
 
       setWeightData(formatted);
     } catch (err) {
@@ -112,6 +163,15 @@ export default function StatsPage() {
   const fetchCalorieHistoryData = async () => {
     setCalorieLoading(true);
     setCalorieError(null);
+
+    // DEMO MODE OVERRIDE
+    if (USE_DEMO_DATA) {
+      setCalorieData(demoCalorieData);
+      setCalorieLoading(false);
+      return;
+    }
+
+    // ---- REAL API BELOW ----
     try {
       const now = new Date();
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -330,6 +390,11 @@ export default function StatsPage() {
                   <VictoryAxis
                     dependentAxis
                     label="Calories"
+                    domain={[
+                      Math.floor(minCal / 100) * 100,
+                      Math.ceil(maxCal / 100) * 100,
+                    ]}
+                    tickFormat={(t) => Math.round(t)}
                     style={{
                       axisLabel: { padding: 40, fontSize: 11 },
                       tickLabels: { fontSize: 10 },

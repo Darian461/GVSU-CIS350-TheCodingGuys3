@@ -8,7 +8,6 @@ import Svg from "react-native-svg";
 import { VictoryLabel, VictoryPie } from "victory-native";
 import { getToken } from "../services/tokenService";
 
-// for development
 const ip = API_BASE_URL;
 export default function HomeScreen() {
   const [totals, setTotals] = useState<any>(null);
@@ -55,7 +54,6 @@ export default function HomeScreen() {
     }
   }
 
-  // This runs every time the screen becomes active again
   useFocusEffect(
     React.useCallback(() => {
       loadTotals();
@@ -76,7 +74,7 @@ export default function HomeScreen() {
     return <Text>No totals...</Text>;
   }
 
-  const dailyGoal = 3500;
+  const dailyGoal = 2000;
   const consumed = totals.total_calories;
   const remaining = dailyGoal - consumed;
 
