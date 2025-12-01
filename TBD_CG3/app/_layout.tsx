@@ -19,24 +19,25 @@ export default function RootLayout() {
     <GluestackUIProvider config={config}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
-          {/* Login screen — HIDE HEADER */}
-          <Stack.Screen 
-            name="index" 
-            options={{ headerShown: false }} 
+
+          {/* LOGIN SCREEN — HIDE THE HEADER */}
+          <Stack.Screen
+            name="index"
+            options={{ headerShown: false }}
           />
 
-          {/* Main app tabs — HIDE HEADER */}
-          <Stack.Screen 
-            name="(tabs)" 
-            options={{ headerShown: false }} 
+          {/* TABS SCREEN — HIDE HEADER */}
+          <Stack.Screen
+            name="(tabs)"
+            options={{ headerShown: false }}
           />
 
-          {/* Modal example — keep or remove */}
+          {/* OPTIONAL MODAL */}
           <Stack.Screen
             name="modal"
-            options={{ 
+            options={{
               presentation: 'modal',
-              title: 'Modal' 
+              title: 'Modal',
             }}
           />
         </Stack>

@@ -1,4 +1,4 @@
-import { API_BASE_URL, DAK_BASE } from "@/app/config/apiConfig";
+import { API_BASE_URL } from "@/app/config/apiConfig";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
@@ -14,7 +14,7 @@ import {
 import "react-native-url-polyfill/auto";
 import { storeToken } from "./services/tokenService";
 
-const API_BASE = DAK_BASE;
+const API_BASE = API_BASE_URL;
 
 type AuthMode = "login" | "register";
 
