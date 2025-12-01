@@ -1,23 +1,28 @@
-import React, { useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
-import { ScrollView, StyleSheet, Text, View, Dimensions } from "react-native";
-import { Box, VStack, HStack } from "@gluestack-ui/themed";
-import { VictoryPie } from "victory-native";
-import Svg from "react-native-svg";
-import { getToken } from "../services/tokenService";
 import { API_BASE_URL } from "@/app/config/apiConfig";
+import { ThemedView } from "@/components/themed-view";
+import { Box, HStack, Spinner, VStack } from "@gluestack-ui/themed";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useState } from "react";
+import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
+import Svg from "react-native-svg";
+import { VictoryPie } from "victory-native";
+import { getToken } from "../services/tokenService";
 
 const ip = API_BASE_URL;
 
 export default function HomeScreen() {
   const [totals, setTotals] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   async function loadTotals() {
     try {
       const token = await getToken();
       console.log("Fetching with token:", token);
 
-      if (!token) return;
+      if (!token) {
+        setLoading(false);
+        return;
+      }
 
       const res = await fetch(`${ip}/food-log/today/totals`, {
         headers: {
@@ -29,20 +34,36 @@ export default function HomeScreen() {
       const text = await res.text();
       console.log("Raw response:", text);
 
-      if (!res.ok) return;
+      if (!res.ok) {
+        setLoading(false);
+        return;
+      }
 
       const data = JSON.parse(text);
       setTotals(data);
     } catch (err) {
       console.error("Fetch failed:", err);
+      setTotals(null);
+    } finally {
+      setLoading(false);
     }
   }
 
-  useFocusEffect(
+useFocusEffect(
     React.useCallback(() => {
       loadTotals();
     }, [])
   );
+
+  if (loading) {
+    return (
+      <ThemedView style={[styles.container, { justifyContent: "center" }]}>
+        <Box p="$4" alignItems="center">
+          <Spinner size="large" />
+        </Box>
+      </ThemedView>
+    );
+  }
 
   if (!totals) return <Text>No totals...</Text>;
 
@@ -184,5 +205,13 @@ const styles = StyleSheet.create({
     height: 10,
     backgroundColor: "#4f46e5",
     borderRadius: 5,
+  },
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    backgroundColor: "#ffffffff",
+    paddingTop: 40,
+    paddingBottom: 0,
   },
 });
