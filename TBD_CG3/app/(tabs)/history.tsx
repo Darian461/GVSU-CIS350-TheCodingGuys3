@@ -68,7 +68,7 @@ export default function StatsPage() {
           x: new Date(item.logged_at),
           y: item.weight,
         }))
-        .sort((a, b) => a.x.getTime() - b.x.getTime());
+        .sort((a: DataPoint, b: DataPoint) => a.x.getTime() - b.x.getTime());
 
       setWeightData(formatted);
     } catch (err) {
