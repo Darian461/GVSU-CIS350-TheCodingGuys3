@@ -48,7 +48,7 @@ export default function StatsPage() {
   const goalWeight = 170;
   const calGoal = 2000;
 
-  /** Fetch weight history */
+  // Fetch weight history
   const loadWeightHistory = async () => {
     setWeightLoading(true);
     setWeightError(null);
@@ -79,7 +79,7 @@ export default function StatsPage() {
     }
   };
 
-  /** Log a new weight */
+  // Log a new weight
   const logWeight = async (weight: number) => {
     try {
       const token = await getToken();
@@ -108,7 +108,7 @@ export default function StatsPage() {
     }
   };
 
-  /** Fetch calorie history */
+  // Fetch calorie history
   const fetchCalorieHistoryData = async () => {
     setCalorieLoading(true);
     setCalorieError(null);
@@ -138,7 +138,6 @@ export default function StatsPage() {
     }
   };
 
-  // Load data when switching views
   useFocusEffect(
     React.useCallback(() => {
       if (selectedView === "weight") loadWeightHistory();
@@ -151,7 +150,7 @@ export default function StatsPage() {
     else fetchCalorieHistoryData();
   }, [selectedView]);
 
-  /** Horizontal reference line for charts */
+  // Goals
   const HorizontalLine = (data: DataPoint[], yValue: number, color: string) => (
     <VictoryLine
       data={[
@@ -184,7 +183,6 @@ export default function StatsPage() {
     <View style={styles.chartContainer}>
       <Text style={styles.sectionTitle}>History</Text>
 
-      {/* Navigation */}
       <View style={styles.navRow}>
         <TouchableOpacity onPress={() => setSelectedView("weight")}>
           <Text
@@ -279,7 +277,6 @@ export default function StatsPage() {
             <Text style={{ color: "#f9f9f9" }}>+ Log New Weight</Text>
           </TouchableOpacity>
 
-          {/* Modal for logging weight */}
           <Modal visible={modalVisible} animationType="slide" transparent>
             <View style={styles.modalOverlay}>
               <View style={styles.modalContent}>

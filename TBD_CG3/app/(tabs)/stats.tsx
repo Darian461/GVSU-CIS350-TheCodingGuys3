@@ -5,8 +5,9 @@ import { Box, VStack, HStack } from "@gluestack-ui/themed";
 import { VictoryPie } from "victory-native";
 import Svg from "react-native-svg";
 import { getToken } from "../services/tokenService";
+import { API_BASE_URL } from "@/app/config/apiConfig";
 
-const ip = "http://192.168.86.54:8000";
+const ip = API_BASE_URL;
 
 export default function HomeScreen() {
   const [totals, setTotals] = useState<any>(null);
