@@ -330,6 +330,11 @@ export default function StatsPage() {
                   <VictoryAxis
                     dependentAxis
                     label="Calories"
+                    domain={[
+                      Math.floor(minCal / 100) * 100,
+                      Math.ceil(maxCal / 100) * 100,
+                    ]}
+                    tickFormat={(t) => Math.round(t)}
                     style={{
                       axisLabel: { padding: 40, fontSize: 11 },
                       tickLabels: { fontSize: 10 },
