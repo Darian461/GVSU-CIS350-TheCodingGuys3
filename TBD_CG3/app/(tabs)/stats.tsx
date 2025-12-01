@@ -59,7 +59,7 @@ export default function HomeScreen() {
   ];
 
   const nutrients = [
-    { name: "Calories", value: totals.total_calories, goal: 200 },
+    { name: "Calories", value: totals.total_calories, goal: 2000 },
     { name: "Protein", value: totals.total_protein, goal: 150 },
     { name: "Carbs", value: totals.total_carbs, goal: 250 },
     { name: "Fat", value: totals.total_fat, goal: 22 },
