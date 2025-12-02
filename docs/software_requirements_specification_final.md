@@ -138,9 +138,9 @@ The purpose of this section is to showcase every software artifact, along with t
 * [Project Proposal](https://github.com/Darian461/GVSU-CIS350-TheCodingGuys3/blob/main/docs/proposal-template.md)
 * [Jira Board](https://thecodingguys3.atlassian.net/jira/software/projects/SCRUM/boards/1?sprintStarted=true)
 * [Meeting Notes](https://github.com/Darian461/GVSU-CIS350-TheCodingGuys3/tree/main/meetings)
+* [Gantt Chart](https://github.com/Darian461/GVSU-CIS350-TheCodingGuys3/blob/main/artifacts/The%20Coding%20Guys%20Gantt%20Chart%20-%20Detailed%20Version%20V1.0.pdf)
 * [Burn-Down Chart](https://github.com/Darian461/GVSU-CIS350-TheCodingGuys3/blob/main/docs/Burn_Down_for_TheCodingGuys_1.png)
+* [Object Diagram](https://github.com/Darian461/GVSU-CIS350-TheCodingGuys3/blob/main/artifacts/CIS_350_Object_Diagram.png)
+* [Communication Diagram](https://github.com/Darian461/GVSU-CIS350-TheCodingGuys3/blob/main/artifacts/CIS350_Communication_Diagram.png)
 * [Mid-Semester Task Breakdown](https://github.com/Darian461/GVSU-CIS350-TheCodingGuys3/blob/main/docs/hw4_tasks.md)
 * [Mid-semester Software Requirements](https://github.com/Darian461/GVSU-CIS350-TheCodingGuys3/blob/main/docs/software_requirements_specification.md)
-
-
-
